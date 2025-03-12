@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using CompanyName.MyMeetings.BuildingBlocks.Domain;
+﻿using CompanyName.MyMeetings.BuildingBlocks.Domain;
 using CompanyName.MyMeetings.Modules.Meetings.Domain.MeetingGroupProposals;
 using CompanyName.MyMeetings.Modules.Meetings.Domain.MeetingGroups.Events;
 using CompanyName.MyMeetings.Modules.Meetings.Domain.MeetingGroups.Rules;
 using CompanyName.MyMeetings.Modules.Meetings.Domain.Meetings;
-using CompanyName.MyMeetings.Modules.Meetings.Domain.Meetings.Rules;
 using CompanyName.MyMeetings.Modules.Meetings.Domain.Members;
 using CompanyName.MyMeetings.Modules.Meetings.Domain.SharedKernel;
 
@@ -57,8 +52,7 @@ namespace CompanyName.MyMeetings.Modules.Meetings.Domain.MeetingGroups
 
             this.AddDomainEvent(new MeetingGroupCreatedDomainEvent(this.Id, creatorId));
 
-            this._members = new List<MeetingGroupMember>();
-            this._members.Add(MeetingGroupMember.CreateNew(this.Id, this._creatorId, MeetingGroupMemberRole.Organizer));
+            this._members = [MeetingGroupMember.CreateNew(this.Id, this._creatorId, MeetingGroupMemberRole.Organizer)];
         }
 
         public void EditGeneralAttributes(string name, string description, MeetingGroupLocation location)

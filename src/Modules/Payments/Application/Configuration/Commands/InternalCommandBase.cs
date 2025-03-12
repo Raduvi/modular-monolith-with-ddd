@@ -1,35 +1,29 @@
-﻿using System;
-using CompanyName.MyMeetings.Modules.Payments.Application.Contracts;
+﻿using CompanyName.MyMeetings.Modules.Payments.Application.Contracts;
 
 namespace CompanyName.MyMeetings.Modules.Payments.Application.Configuration.Commands
 {
     public abstract class InternalCommandBase : ICommand
     {
-        public Guid Id { get; }
-
-        protected InternalCommandBase()
-        {
-            this.Id = Guid.NewGuid();
-        }
-
         protected InternalCommandBase(Guid id)
         {
-            this.Id = id;
+            Id = id;
         }
+
+        public Guid Id { get; }
     }
 
     public abstract class InternalCommandBase<TResult> : ICommand<TResult>
     {
-        public Guid Id { get; }
-
         protected InternalCommandBase()
         {
-            this.Id = Guid.NewGuid();
+            Id = Guid.NewGuid();
         }
 
         protected InternalCommandBase(Guid id)
         {
-            this.Id = id;
+            Id = id;
         }
+
+        public Guid Id { get; }
     }
 }

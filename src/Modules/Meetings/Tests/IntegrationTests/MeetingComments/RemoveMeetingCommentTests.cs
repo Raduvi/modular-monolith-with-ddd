@@ -1,6 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
-using CompanyName.MyMeetings.BuildingBlocks.Application;
+﻿using CompanyName.MyMeetings.BuildingBlocks.Application;
 using CompanyName.MyMeetings.Modules.Meetings.Application.MeetingComments.AddMeetingComment;
 using CompanyName.MyMeetings.Modules.Meetings.Application.MeetingComments.GetMeetingComments;
 using CompanyName.MyMeetings.Modules.Meetings.Application.MeetingComments.RemoveMeetingComment;
@@ -29,7 +27,7 @@ namespace CompanyName.MyMeetings.Modules.Meetings.IntegrationTests.MeetingCommen
 
             // Assert
             var meetingComments = await MeetingsModule.ExecuteQueryAsync(new GetMeetingCommentsQuery(meetingId));
-            Assert.IsEmpty(meetingComments);
+            Assert.That(meetingComments, Is.Empty);
         }
 
         [Test]

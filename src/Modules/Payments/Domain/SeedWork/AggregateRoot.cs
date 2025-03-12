@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using CompanyName.MyMeetings.BuildingBlocks.Domain;
+﻿using CompanyName.MyMeetings.BuildingBlocks.Domain;
 
 namespace CompanyName.MyMeetings.Modules.Payments.Domain.SeedWork
 {
@@ -21,7 +19,7 @@ namespace CompanyName.MyMeetings.Modules.Payments.Domain.SeedWork
 
         protected AggregateRoot()
         {
-            _domainEvents = new List<IDomainEvent>();
+            _domainEvents = [];
 
             Version = -1;
         }

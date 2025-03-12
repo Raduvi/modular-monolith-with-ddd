@@ -1,5 +1,4 @@
-﻿using System.Threading.Tasks;
-using CompanyName.MyMeetings.BuildingBlocks.Application.Data;
+﻿using CompanyName.MyMeetings.BuildingBlocks.Application.Data;
 using Dapper;
 
 namespace CompanyName.MyMeetings.Modules.Payments.Infrastructure.AggregateStore
@@ -17,11 +16,15 @@ namespace CompanyName.MyMeetings.Modules.Payments.Infrastructure.AggregateStore
         {
             using var connection = _sqlConnectionFactory.GetOpenConnection();
 
+            const string sql = """
+                               SELECT [SubscriptionCheckpoint].Position 
+                               FROM [payments].[SubscriptionCheckpoints] AS [SubscriptionCheckpoint] 
+                               WHERE [Code] = @Code
+                               """;
+
             var checkpoint = connection.QuerySingleOrDefault<long?>(
-                "SELECT " +
-                "[SubscriptionCheckpoint].Position " +
-                "FROM [payments].[SubscriptionCheckpoints] AS [SubscriptionCheckpoint] " +
-                "WHERE [Code] = @Code", new
+                sql,
+                new
                 {
                     Code = subscriptionCode
                 });

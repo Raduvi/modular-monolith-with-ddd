@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using CompanyName.MyMeetings.SUT.Helpers;
+﻿using CompanyName.MyMeetings.SUT.Helpers;
 using CompanyName.MyMeetings.SUT.SeedWork;
 using NUnit.Framework;
 
@@ -24,7 +21,7 @@ namespace CompanyName.MyMeetings.SUT.TestCases
                 "testAdmin@mail.com");
 
             var userId = await UsersFactory.GivenUser(
-                UserAccessModule,
+                RegistrationsModule,
                 ConnectionString,
                 "adamSmith@mail.com",
                 "adamSmithPass",
@@ -48,7 +45,7 @@ namespace CompanyName.MyMeetings.SUT.TestCases
             await TestPaymentsManager.BuySubscription(
                 PaymentsModule,
                 ExecutionContextAccessor);
-            
+
             SetDate(new DateTime(2022, 7, 1, 10, 0, 0));
 
             var meetingId = await TestMeetingFactory.GivenMeeting(
@@ -68,18 +65,17 @@ namespace CompanyName.MyMeetings.SUT.TestCases
                 null,
                 0,
                 null,
-                new List<Guid>()
-            );
-            
+                []);
+
             var attendeeUserId = await UsersFactory.GivenUser(
-                UserAccessModule,
+                RegistrationsModule,
                 ConnectionString,
                 "rickmorty@mail.com",
                 "rickmortyPass",
                 "Rick",
                 "Morty",
                 "rickmorty@mail.com");
-            
+
             ExecutionContextAccessor.SetUserId(attendeeUserId);
 
             await TestMeetingGroupManager.JoinToGroup(MeetingsModule, meetingGroupId);

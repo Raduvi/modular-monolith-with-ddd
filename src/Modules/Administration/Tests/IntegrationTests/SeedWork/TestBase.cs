@@ -1,8 +1,5 @@
-using System;
 using System.Data;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Threading.Tasks;
 using CompanyName.MyMeetings.BuildingBlocks.Application.Emails;
 using CompanyName.MyMeetings.BuildingBlocks.Domain;
 using CompanyName.MyMeetings.BuildingBlocks.IntegrationTests;
@@ -46,7 +43,13 @@ namespace CompanyName.MyMeetings.Modules.Administration.IntegrationTests.SeedWor
                 await ClearDatabase(sqlConnection);
             }
 
-            Logger = Substitute.For<ILogger>();
+            Logger = new LoggerConfiguration()
+                .Enrich.FromLogContext()
+                .WriteTo.Console(
+                    outputTemplate:
+                    "[{Timestamp:HH:mm:ss} {Level:u3}] [{Module}] [{Context}] {Message:lj}{NewLine}{Exception}")
+                .CreateLogger();
+
             EmailSender = Substitute.For<IEmailSender>();
             ExecutionContext = new ExecutionContextMock(Guid.NewGuid());
 

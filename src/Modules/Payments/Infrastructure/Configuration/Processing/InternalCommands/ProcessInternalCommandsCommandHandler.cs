@@ -1,10 +1,6 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-using CompanyName.MyMeetings.BuildingBlocks.Application.Data;
+﻿using CompanyName.MyMeetings.BuildingBlocks.Application.Data;
 using CompanyName.MyMeetings.Modules.Payments.Application.Configuration.Commands;
 using Dapper;
-using MediatR;
 using Newtonsoft.Json;
 using Polly;
 
@@ -20,17 +16,18 @@ namespace CompanyName.MyMeetings.Modules.Payments.Infrastructure.Configuration.P
             _sqlConnectionFactory = sqlConnectionFactory;
         }
 
-        public async Task<Unit> Handle(ProcessInternalCommandsCommand command, CancellationToken cancellationToken)
+        public async Task Handle(ProcessInternalCommandsCommand command, CancellationToken cancellationToken)
         {
             var connection = this._sqlConnectionFactory.GetOpenConnection();
 
-            string sql = "SELECT " +
-                         $"[Command].[Id] AS [{nameof(InternalCommandDto.Id)}], " +
-                         $"[Command].[Type] AS [{nameof(InternalCommandDto.Type)}], " +
-                         $"[Command].[Data] AS [{nameof(InternalCommandDto.Data)}] " +
-                         "FROM [payments].[InternalCommands] AS [Command] " +
-                         "WHERE [Command].[ProcessedDate] IS NULL " +
-                         "ORDER BY [Command].[EnqueueDate]";
+            const string sql = $"""
+                               SELECT [Command].[Id] AS [{nameof(InternalCommandDto.Id)}], 
+                                      [Command].[Type] AS [{nameof(InternalCommandDto.Type)}], 
+                                      [Command].[Data] AS [{nameof(InternalCommandDto.Data)}] 
+                               FROM [payments].[InternalCommands] AS [Command] 
+                               WHERE [Command].[ProcessedDate] IS NULL 
+                               ORDER BY [Command].[EnqueueDate]
+                               """;
             var commands = await connection.QueryAsync<InternalCommandDto>(sql);
 
             var internalCommandsList = commands.AsList();
@@ -64,8 +61,6 @@ namespace CompanyName.MyMeetings.Modules.Payments.Infrastructure.Configuration.P
                         });
                 }
             }
-
-            return Unit.Value;
         }
 
         private async Task ProcessCommand(

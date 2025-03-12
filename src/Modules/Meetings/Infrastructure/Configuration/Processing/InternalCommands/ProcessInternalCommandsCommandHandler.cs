@@ -1,13 +1,6 @@
-﻿using System;
-using System.Data;
-using System.Threading;
-using System.Threading.Tasks;
-using CompanyName.MyMeetings.BuildingBlocks.Application.Data;
-using CompanyName.MyMeetings.BuildingBlocks.Infrastructure;
+﻿using CompanyName.MyMeetings.BuildingBlocks.Application.Data;
 using CompanyName.MyMeetings.Modules.Meetings.Application.Configuration.Commands;
-using CompanyName.MyMeetings.Modules.Meetings.Application.Contracts;
 using Dapper;
-using MediatR;
 using Newtonsoft.Json;
 using Polly;
 
@@ -23,17 +16,19 @@ namespace CompanyName.MyMeetings.Modules.Meetings.Infrastructure.Configuration.P
             _sqlConnectionFactory = sqlConnectionFactory;
         }
 
-        public async Task<Unit> Handle(ProcessInternalCommandsCommand command, CancellationToken cancellationToken)
+        public async Task Handle(ProcessInternalCommandsCommand command, CancellationToken cancellationToken)
         {
             var connection = this._sqlConnectionFactory.GetOpenConnection();
 
-            string sql = "SELECT " +
-                               $"[Command].[Id] AS [{nameof(InternalCommandDto.Id)}], " +
-                               $"[Command].[Type] AS [{nameof(InternalCommandDto.Type)}], " +
-                               $"[Command].[Data] AS [{nameof(InternalCommandDto.Data)}] " +
-                               "FROM [meetings].[InternalCommands] AS [Command] " +
-                               "WHERE [Command].[ProcessedDate] IS NULL " +
-                               "ORDER BY [Command].[EnqueueDate]";
+            const string sql = $"""
+                                SELECT 
+                                    [Command].[Id] AS [{nameof(InternalCommandDto.Id)}], 
+                                    [Command].[Type] AS [{nameof(InternalCommandDto.Type)}], 
+                                    [Command].[Data] AS [{nameof(InternalCommandDto.Data)}] 
+                                FROM [meetings].[InternalCommands] AS [Command] 
+                                WHERE [Command].[ProcessedDate] IS NULL 
+                                ORDER BY [Command].[EnqueueDate]
+                                """;
             var commands = await connection.QueryAsync<InternalCommandDto>(sql);
 
             var internalCommandsList = commands.AsList();
@@ -54,10 +49,11 @@ namespace CompanyName.MyMeetings.Modules.Meetings.Infrastructure.Configuration.P
                 if (result.Outcome == OutcomeType.Failure)
                 {
                     await connection.ExecuteScalarAsync(
-                        "UPDATE [meetings].[InternalCommands] " +
-                                                        "SET ProcessedDate = @NowDate, " +
-                                                        "Error = @Error " +
-                                                        "WHERE [Id] = @Id",
+                        """
+                        UPDATE [meetings].[InternalCommands] 
+                        SET ProcessedDate = @NowDate, Error = @Error 
+                        WHERE [Id] = @Id
+                        """,
                         new
                         {
                             NowDate = DateTime.UtcNow,
@@ -66,8 +62,6 @@ namespace CompanyName.MyMeetings.Modules.Meetings.Infrastructure.Configuration.P
                         });
                 }
             }
-
-            return Unit.Value;
         }
 
         private async Task ProcessCommand(

@@ -1,10 +1,5 @@
-﻿using System;
-using System.Data.SqlClient;
-using System.IO;
-using System.Threading.Tasks;
-using CompanyName.MyMeetings.BuildingBlocks.Application;
+﻿using System.Data.SqlClient;
 using CompanyName.MyMeetings.BuildingBlocks.Application.Emails;
-using CompanyName.MyMeetings.BuildingBlocks.EventBus;
 using CompanyName.MyMeetings.BuildingBlocks.Infrastructure.Emails;
 using CompanyName.MyMeetings.BuildingBlocks.Infrastructure.EventBus;
 using CompanyName.MyMeetings.Modules.Administration.Application.Contracts;
@@ -17,6 +12,9 @@ using CompanyName.MyMeetings.Modules.Meetings.Infrastructure.Configuration;
 using CompanyName.MyMeetings.Modules.Payments.Application.Contracts;
 using CompanyName.MyMeetings.Modules.Payments.Infrastructure;
 using CompanyName.MyMeetings.Modules.Payments.Infrastructure.Configuration;
+using CompanyName.MyMeetings.Modules.Registrations.Application.Contracts;
+using CompanyName.MyMeetings.Modules.Registrations.Infrastructure;
+using CompanyName.MyMeetings.Modules.Registrations.Infrastructure.Configuration;
 using CompanyName.MyMeetings.Modules.UserAccess.Application.Contracts;
 using CompanyName.MyMeetings.Modules.UserAccess.Infrastructure;
 using CompanyName.MyMeetings.Modules.UserAccess.Infrastructure.Configuration;
@@ -42,10 +40,12 @@ namespace CompanyName.MyMeetings.SUT.SeedWork
 
         protected IUserAccessModule UserAccessModule { get; private set; }
 
+        protected IRegistrationsModule RegistrationsModule { get; private set; }
+
         protected IMeetingsModule MeetingsModule { get; private set; }
-        
+
         protected IAdministrationModule AdministrationModule { get; private set; }
-        
+
         protected IPaymentsModule PaymentsModule { get; private set; }
 
         protected ExecutionContextMock ExecutionContextAccessor { get; private set; }
@@ -70,15 +70,17 @@ namespace CompanyName.MyMeetings.SUT.SeedWork
             ExecutionContextAccessor = new ExecutionContextMock(Guid.NewGuid());
 
             var emailsConfiguration = new EmailsConfiguration("from@email.com");
-            
+
             Logger = Substitute.For<ILogger>();
-            
+
             EventsBus = new InMemoryEventBusClient(Logger);
+
+            InitializeRegistrationsModule(emailsConfiguration);
 
             InitializeUserAccessModule(emailsConfiguration);
 
             InitializeMeetingsModule(emailsConfiguration);
-            
+
             InitializeAdministrationModule();
 
             PaymentsStartup.Initialize(
@@ -86,11 +88,45 @@ namespace CompanyName.MyMeetings.SUT.SeedWork
                 ExecutionContextAccessor,
                 Logger,
                 emailsConfiguration,
-                EventsBus, 
+                EventsBus,
                 true,
                 100);
-            
+
             PaymentsModule = new PaymentsModule();
+        }
+
+        public static async Task<T> GetEventually<T>(IProbe<T> probe, int timeout)
+            where T : class
+        {
+            var poller = new Poller(timeout);
+
+            return await poller.GetAsync(probe);
+        }
+
+        [TearDown]
+        public void AfterEachTest()
+        {
+            SystemClock.Reset();
+            Modules.Payments.Domain.SeedWork.SystemClock.Reset();
+        }
+
+        protected async Task WaitForAsyncOperations()
+        {
+            await AsyncOperationsHelper.WaitForProcessing(ConnectionString);
+        }
+
+        protected void SetDate(DateTime date)
+        {
+            SystemClock.Set(date);
+            Modules.Payments.Domain.SeedWork.SystemClock.Set(date);
+        }
+
+        protected async Task ExecuteScript(string scriptPath)
+        {
+            var sql = await File.ReadAllTextAsync(scriptPath);
+
+            await using var sqlConnection = new SqlConnection(ConnectionString);
+            await sqlConnection.ExecuteScalarAsync(sql);
         }
 
         private void InitializeAdministrationModule()
@@ -105,32 +141,6 @@ namespace CompanyName.MyMeetings.SUT.SeedWork
             AdministrationModule = new AdministrationModule();
         }
 
-        protected async Task WaitForAsyncOperations()
-        {
-            await AsyncOperationsHelper.WaitForProcessing(ConnectionString);
-        }
-        
-        protected void SetDate(DateTime date)
-        {
-            SystemClock.Set(date);
-            Modules.Payments.Domain.SeedWork.SystemClock.Set(date);
-        }
-        
-        public static async Task<T> GetEventually<T>(IProbe<T> probe, int timeout)
-            where T : class
-        {
-            var poller = new Poller(timeout);
-
-            return await poller.GetAsync(probe);
-        }
-        
-        [TearDown]
-        public void AfterEachTest()
-        {
-            SystemClock.Reset();
-            Modules.Payments.Domain.SeedWork.SystemClock.Reset();
-        }
-
         private void InitializeMeetingsModule(EmailsConfiguration emailsConfiguration)
         {
             MeetingsStartup.Initialize(
@@ -142,14 +152,6 @@ namespace CompanyName.MyMeetings.SUT.SeedWork
                 100);
 
             MeetingsModule = new MeetingsModule();
-        }
-
-        protected async Task ExecuteScript(string scriptPath)
-        {
-            var sql = await File.ReadAllTextAsync(scriptPath);
-
-            await using var sqlConnection = new SqlConnection(ConnectionString);
-            await sqlConnection.ExecuteScalarAsync(sql);
         }
 
         private async Task SeedPermissions()
@@ -173,6 +175,24 @@ namespace CompanyName.MyMeetings.SUT.SeedWork
                 100);
 
             UserAccessModule = new UserAccessModule();
+        }
+
+        private void InitializeRegistrationsModule(EmailsConfiguration emailsConfiguration)
+        {
+            Logger = Substitute.For<ILogger>();
+            EmailSender = Substitute.For<IEmailSender>();
+
+            RegistrationsStartup.Initialize(
+                ConnectionString,
+                ExecutionContextAccessor,
+                Logger,
+                emailsConfiguration,
+                "key",
+                EmailSender,
+                EventsBus,
+                100);
+
+            RegistrationsModule = new RegistrationsModule();
         }
 
         private void SetConnectionString()

@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using CompanyName.MyMeetings.BuildingBlocks.Application.Data;
+﻿using CompanyName.MyMeetings.BuildingBlocks.Application.Data;
 using CompanyName.MyMeetings.BuildingBlocks.Domain;
 using CompanyName.MyMeetings.BuildingBlocks.Infrastructure.Serialization;
 using CompanyName.MyMeetings.Modules.Payments.Domain.SeedWork;
-using CompanyName.MyMeetings.Modules.Payments.Infrastructure.Configuration;
 using Newtonsoft.Json;
 using SqlStreamStore;
 using SqlStreamStore.Streams;
@@ -22,18 +17,12 @@ namespace CompanyName.MyMeetings.Modules.Payments.Infrastructure.AggregateStore
         private readonly List<AggregateToSave> _aggregatesToSave;
 
         public SqlStreamAggregateStore(
-            ISqlConnectionFactory sqlConnectionFactory)
+            ISqlConnectionFactory sqlConnectionFactory, IStreamStore streamStore)
         {
-            _appendedChanges = new List<IDomainEvent>();
+            _appendedChanges = [];
 
-            _streamStore =
-                new MsSqlStreamStore(
-                    new MsSqlStreamStoreSettings(sqlConnectionFactory.GetConnectionString())
-                    {
-                        Schema = DatabaseSchema.Name
-                    });
-
-            _aggregatesToSave = new List<AggregateToSave>();
+            _aggregatesToSave = [];
+            _streamStore = streamStore;
         }
 
         public async Task Save()
@@ -54,7 +43,7 @@ namespace CompanyName.MyMeetings.Modules.Payments.Infrastructure.AggregateStore
         {
             var streamId = GetStreamId(aggregateId);
 
-            IList<IDomainEvent> domainEvents = new List<IDomainEvent>();
+            List<IDomainEvent> domainEvents = [];
             ReadStreamPage readStreamPage;
             int position = StreamVersion.Start;
             int take = 100;
@@ -120,7 +109,7 @@ namespace CompanyName.MyMeetings.Modules.Payments.Infrastructure.AggregateStore
             T aggregate)
             where T : AggregateRoot
         {
-            List<NewStreamMessage> newStreamMessages = new List<NewStreamMessage>();
+            List<NewStreamMessage> newStreamMessages = [];
 
             var domainEvents = aggregate.GetDomainEvents();
 

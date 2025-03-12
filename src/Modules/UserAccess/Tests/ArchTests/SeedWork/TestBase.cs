@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
+﻿using System.Reflection;
 using CompanyName.MyMeetings.Modules.UserAccess.Application.Contracts;
 using CompanyName.MyMeetings.Modules.UserAccess.Domain.Users;
 using CompanyName.MyMeetings.Modules.UserAccess.Infrastructure;
@@ -20,7 +17,7 @@ namespace CompanyName.MyMeetings.Modules.UserAccess.ArchTests.SeedWork
 
         protected static void AssertAreImmutable(IEnumerable<Type> types)
         {
-            IList<Type> failingTypes = new List<Type>();
+            List<Type> failingTypes = [];
             foreach (var type in types)
             {
                 if (type.GetFields().Any(x => !x.IsInitOnly) || type.GetProperties().Any(x => x.CanWrite))

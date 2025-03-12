@@ -1,7 +1,4 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-using CompanyName.MyMeetings.BuildingBlocks.Application.Data;
+﻿using CompanyName.MyMeetings.BuildingBlocks.Application.Data;
 using CompanyName.MyMeetings.BuildingBlocks.Application.Events;
 using CompanyName.MyMeetings.BuildingBlocks.Infrastructure.DomainEventsDispatching;
 using CompanyName.MyMeetings.Modules.Meetings.Application.Configuration.Commands;
@@ -32,23 +29,27 @@ namespace CompanyName.MyMeetings.Modules.Meetings.Infrastructure.Configuration.P
             _domainNotificationsMapper = domainNotificationsMapper;
         }
 
-        public async Task<Unit> Handle(ProcessOutboxCommand command, CancellationToken cancellationToken)
+        public async Task Handle(ProcessOutboxCommand command, CancellationToken cancellationToken)
         {
             var connection = this._sqlConnectionFactory.GetOpenConnection();
-            string sql = "SELECT " +
-                         $"[OutboxMessage].[Id] AS [{nameof(OutboxMessageDto.Id)}], " +
-                         $"[OutboxMessage].[Type] AS [{nameof(OutboxMessageDto.Type)}], " +
-                         $"[OutboxMessage].[Data] AS [{nameof(OutboxMessageDto.Data)}] " +
-                         "FROM [meetings].[OutboxMessages] AS [OutboxMessage] " +
-                         "WHERE [OutboxMessage].[ProcessedDate] IS NULL " +
-                         "ORDER BY [OutboxMessage].[OccurredOn]";
+            const string sql = $"""
+                                SELECT 
+                                    [OutboxMessage].[Id] AS [{nameof(OutboxMessageDto.Id)}], 
+                                    [OutboxMessage].[Type] AS [{nameof(OutboxMessageDto.Type)}], 
+                                    [OutboxMessage].[Data] AS [{nameof(OutboxMessageDto.Data)}] 
+                                FROM [meetings].[OutboxMessages] AS [OutboxMessage] 
+                                WHERE [OutboxMessage].[ProcessedDate] IS NULL 
+                                ORDER BY [OutboxMessage].[OccurredOn]
+                                """;
 
             var messages = await connection.QueryAsync<OutboxMessageDto>(sql);
             var messagesList = messages.AsList();
 
-            const string sqlUpdateProcessedDate = "UPDATE [meetings].[OutboxMessages] " +
-                                                  "SET [ProcessedDate] = @Date " +
-                                                  "WHERE [Id] = @Id";
+            const string sqlUpdateProcessedDate = """
+                                                  UPDATE [meetings].[OutboxMessages] 
+                                                  SET [ProcessedDate] = @Date 
+                                                  WHERE [Id] = @Id
+                                                  """;
             if (messagesList.Count > 0)
             {
                 foreach (var message in messagesList)
@@ -68,8 +69,6 @@ namespace CompanyName.MyMeetings.Modules.Meetings.Infrastructure.Configuration.P
                     }
                 }
             }
-
-            return Unit.Value;
         }
 
         private class OutboxMessageContextEnricher : ILogEventEnricher

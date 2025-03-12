@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Specialized;
+﻿using System.Collections.Specialized;
 using CompanyName.MyMeetings.Modules.Meetings.Infrastructure.Configuration.Processing.Inbox;
 using CompanyName.MyMeetings.Modules.Meetings.Infrastructure.Configuration.Processing.InternalCommands;
 using CompanyName.MyMeetings.Modules.Meetings.Infrastructure.Configuration.Processing.Outbox;
@@ -57,7 +56,7 @@ namespace CompanyName.MyMeetings.Modules.Meetings.Infrastructure.Configuration.Q
                 .GetAwaiter().GetResult();
 
             var processInboxJob = JobBuilder.Create<ProcessInboxJob>().Build();
-            
+
             ITrigger processInboxTrigger;
             if (internalProcessingPoolingInterval.HasValue)
             {

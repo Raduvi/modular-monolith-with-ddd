@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using CompanyName.MyMeetings.BuildingBlocks.Domain;
+﻿using CompanyName.MyMeetings.BuildingBlocks.Domain;
 using CompanyName.MyMeetings.Modules.Payments.Domain.SeedWork;
 using NUnit.Framework;
 
@@ -39,7 +36,7 @@ namespace CompanyName.MyMeetings.Modules.Payments.Domain.UnitTests.SeedWork
             where T : IDomainEvent
         {
             var domainEvent = aggregate.GetDomainEvents().OfType<T>().SingleOrDefault();
-            Assert.Null(domainEvent);
+            Assert.That(domainEvent, Is.Null);
         }
 
         public static List<T> AssertPublishedDomainEvents<T>(Entity aggregate)

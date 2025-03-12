@@ -1,8 +1,4 @@
-﻿using System;
-using System.Reflection;
-using System.Threading;
-using System.Threading.Tasks;
-using CompanyName.MyMeetings.BuildingBlocks.Application.Data;
+﻿using CompanyName.MyMeetings.BuildingBlocks.Application.Data;
 using CompanyName.MyMeetings.BuildingBlocks.Application.Events;
 using CompanyName.MyMeetings.BuildingBlocks.Infrastructure.DomainEventsDispatching;
 using CompanyName.MyMeetings.Modules.Administration.Application.Configuration.Commands;
@@ -15,7 +11,7 @@ using Serilog.Events;
 
 namespace CompanyName.MyMeetings.Modules.Administration.Infrastructure.Configuration.Processing.Outbox
 {
-    internal class ProcessOutboxCommandHandler : ICommandHandler<ProcessOutboxCommand, Unit>
+    internal class ProcessOutboxCommandHandler : ICommandHandler<ProcessOutboxCommand>
     {
         private readonly IMediator _mediator;
 
@@ -33,16 +29,18 @@ namespace CompanyName.MyMeetings.Modules.Administration.Infrastructure.Configura
             _domainNotificationsMapper = domainNotificationsMapper;
         }
 
-        public async Task<Unit> Handle(ProcessOutboxCommand command, CancellationToken cancellationToken)
+        public async Task Handle(ProcessOutboxCommand command, CancellationToken cancellationToken)
         {
             var connection = this._sqlConnectionFactory.GetOpenConnection();
-            string sql = "SELECT " +
-                               $"[OutboxMessage].[Id] AS [{nameof(OutboxMessageDto.Id)}], " +
-                               $"[OutboxMessage].[Type] AS [{nameof(OutboxMessageDto.Type)}], " +
-                               $"[OutboxMessage].[Data] AS [{nameof(OutboxMessageDto.Data)}] " +
-                               "FROM [administration].[OutboxMessages] AS [OutboxMessage] " +
-                               "WHERE [OutboxMessage].[ProcessedDate] IS NULL " +
-                               "ORDER BY [OutboxMessage].[OccurredOn]";
+            const string sql = $"""
+                                SELECT
+                                    [OutboxMessage].[Id] AS [{nameof(OutboxMessageDto.Id)}],
+                                    [OutboxMessage].[Type] AS [{nameof(OutboxMessageDto.Type)}],
+                                    [OutboxMessage].[Data] AS [{nameof(OutboxMessageDto.Data)}]
+                                FROM [administration].[OutboxMessages] AS [OutboxMessage]
+                                WHERE [OutboxMessage].[ProcessedDate] IS NULL
+                                ORDER BY [OutboxMessage].[OccurredOn]
+                                """;
 
             var messages = await connection.QueryAsync<OutboxMessageDto>(sql);
             var messagesList = messages.AsList();
@@ -69,8 +67,6 @@ namespace CompanyName.MyMeetings.Modules.Administration.Infrastructure.Configura
                     }
                 }
             }
-
-            return Unit.Value;
         }
 
         private class OutboxMessageContextEnricher : ILogEventEnricher

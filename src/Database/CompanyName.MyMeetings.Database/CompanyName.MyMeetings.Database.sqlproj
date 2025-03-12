@@ -17,12 +17,13 @@
     <ModelCollation>1033, CI</ModelCollation>
     <DefaultFileStructure>BySchemaAndSchemaType</DefaultFileStructure>
     <DeployToDatabase>True</DeployToDatabase>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <TargetLanguage>CS</TargetLanguage>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <SqlServerVerification>False</SqlServerVerification>
     <IncludeCompositeObjects>True</IncludeCompositeObjects>
     <TargetDatabaseSet>True</TargetDatabaseSet>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <BuildScriptName>$(MSBuildProjectName).sql</BuildScriptName>
@@ -45,6 +46,7 @@
     <DefineTrace>true</DefineTrace>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <RunSqlCodeAnalysis>True</RunSqlCodeAnalysis>
   </PropertyGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">11.0</VisualStudioVersion>
@@ -67,11 +69,29 @@
   <Import Condition="'$(SQLDBExtensionsRefPath)' == ''" Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\SSDT\Microsoft.Data.Tools.Schema.SqlTasks.targets" />
   <ItemGroup>
     <Folder Include="Properties" />
-    <Folder Include="Structure" />
     <Folder Include="Scripts" />
     <Folder Include="Scripts\Migrations" />
     <Folder Include="Scripts\Seeds" />
     <Folder Include="Scripts\Migrations\1_0_0_0\" />
+    <Folder Include="Structure\administration\" />
+    <Folder Include="Structure\administration\Tables\" />
+    <Folder Include="Structure\administration\Views\" />
+    <Folder Include="Structure\app\" />
+    <Folder Include="Structure\app\Tables\" />
+    <Folder Include="Structure\meetings\" />
+    <Folder Include="Structure\meetings\Tables\" />
+    <Folder Include="Structure\meetings\Views\" />
+    <Folder Include="Structure\payments\" />
+    <Folder Include="Structure\payments\Tables\" />
+    <Folder Include="Structure\payments\Types\" />
+    <Folder Include="Structure\Security\" />
+    <Folder Include="Structure\users\" />
+    <Folder Include="Structure\users\Tables\" />
+    <Folder Include="Structure\users\Views\" />
+    <Folder Include="Structure\registrations\" />
+    <Folder Include="Structure\registrations\Tables\" />
+    <Folder Include="Structure\registrations\Views\" />
+    <Folder Include="Structure\" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Structure\administration\Tables\InboxMessages.sql" />
@@ -122,17 +142,20 @@
     <Build Include="Structure\payments\Tables\SubscriptionDetails.sql" />
     <Build Include="Structure\payments\Tables\SubscriptionPayments.sql" />
     <Build Include="Structure\payments\Types\NewStreamMessages.sql" />
+    <Build Include="Structure\registrations\Tables\UserRegistrations.sql" />
+    <Build Include="Structure\registrations\Tables\OutboxMessages.sql" />
+    <Build Include="Structure\registrations\Tables\InboxMessages.sql" />
+    <Build Include="Structure\registrations\Tables\InternalCommands.sql" />
+    <Build Include="Structure\registrations\Views\v_UserRegistrations.sql" />
     <Build Include="Structure\Security\Schemas.sql" />
     <Build Include="Structure\users\Tables\InboxMessages.sql" />
     <Build Include="Structure\users\Tables\InternalCommands.sql" />
     <Build Include="Structure\users\Tables\OutboxMessages.sql" />
     <Build Include="Structure\users\Tables\Permissions.sql" />
     <Build Include="Structure\users\Tables\RolesToPermissions.sql" />
-    <Build Include="Structure\users\Tables\UserRegistrations.sql" />
     <Build Include="Structure\users\Tables\UserRoles.sql" />
     <Build Include="Structure\users\Tables\Users.sql" />
     <Build Include="Structure\users\Views\v_UserPermissions.sql" />
-    <Build Include="Structure\users\Views\v_UserRegistrations.sql" />
     <Build Include="Structure\users\Views\v_UserRoles.sql" />
     <Build Include="Structure\users\Views\v_Users.sql" />
     <None Include="Scripts\CreateStructure.sql" />
@@ -155,6 +178,7 @@
     <None Include="Scripts\Migrations\1_0_0_0\0011_add_likes_count_to_meeting_comments_table.sql" />
     <None Include="Scripts\Migrations\1_0_0_0\0012_add_likes_count_to_meeting_comments_view.sql" />
     <None Include="Scripts\Migrations\1_0_0_0\0013_add_meeting_member_comment_likes_table.sql" />
+    <None Include="Scripts\Migrations\1_0_0_0\0014_add_missing_tables_for_registrations.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Scripts\ClearDatabase.sql" />

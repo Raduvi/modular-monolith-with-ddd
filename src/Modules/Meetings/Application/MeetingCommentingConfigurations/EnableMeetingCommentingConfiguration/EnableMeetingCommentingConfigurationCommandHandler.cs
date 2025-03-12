@@ -1,15 +1,11 @@
-﻿using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
-using CompanyName.MyMeetings.BuildingBlocks.Application;
+﻿using CompanyName.MyMeetings.BuildingBlocks.Application;
 using CompanyName.MyMeetings.Modules.Meetings.Application.Configuration.Commands;
 using CompanyName.MyMeetings.Modules.Meetings.Domain.MeetingCommentingConfigurations;
 using CompanyName.MyMeetings.Modules.Meetings.Domain.MeetingGroups;
 using CompanyName.MyMeetings.Modules.Meetings.Domain.Meetings;
 using CompanyName.MyMeetings.Modules.Meetings.Domain.Members;
-using MediatR;
 
-namespace CompanyName.MyMeetings.Modules.Meetings.Application.MeetingCommentingConfiguration.EnableMeetingCommentingConfiguration
+namespace CompanyName.MyMeetings.Modules.Meetings.Application.MeetingCommentingConfigurations.EnableMeetingCommentingConfiguration
 {
     internal class EnableMeetingCommentingConfigurationCommandHandler : ICommandHandler<EnableMeetingCommentingConfigurationCommand>
     {
@@ -30,12 +26,12 @@ namespace CompanyName.MyMeetings.Modules.Meetings.Application.MeetingCommentingC
             _memberContext = memberContext;
         }
 
-        public async Task<Unit> Handle(EnableMeetingCommentingConfigurationCommand command, CancellationToken cancellationToken)
+        public async Task Handle(EnableMeetingCommentingConfigurationCommand command, CancellationToken cancellationToken)
         {
             var meetingCommentingConfiguration = await _meetingCommentingConfigurationRepository.GetByMeetingIdAsync(new MeetingId(command.MeetingId));
             if (meetingCommentingConfiguration == null)
             {
-                throw new InvalidCommandException(new List<string> { "Meeting commenting configuration for enabling commenting must exist." });
+                throw new InvalidCommandException(["Meeting commenting configuration for enabling commenting must exist."]);
             }
 
             var meeting = await _meetingRepository.GetByIdAsync(new MeetingId(command.MeetingId));
@@ -43,8 +39,6 @@ namespace CompanyName.MyMeetings.Modules.Meetings.Application.MeetingCommentingC
             var meetingGroup = await _meetingGroupRepository.GetByIdAsync(meeting.GetMeetingGroupId());
 
             meetingCommentingConfiguration.EnableCommenting(_memberContext.MemberId, meetingGroup);
-
-            return Unit.Value;
         }
     }
 }

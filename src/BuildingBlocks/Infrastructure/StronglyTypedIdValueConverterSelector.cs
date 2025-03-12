@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
+﻿using System.Collections.Concurrent;
 using CompanyName.MyMeetings.BuildingBlocks.Domain;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace CompanyName.MyMeetings.BuildingBlocks.Infrastructure
 {
     /// <summary>
-    /// Based on https://andrewlock.net/strongly-typed-ids-in-ef-core-using-strongly-typed-entity-ids-to-avoid-primitive-obsession-part-4/
+    /// Based on https://andrewlock.net/strongly-typed-ids-in-ef-core-using-strongly-typed-entity-ids-to-avoid-primitive-obsession-part-4/.
     /// </summary>
     public class StronglyTypedIdValueConverterSelector : ValueConverterSelector
     {

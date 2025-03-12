@@ -1,10 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using CompanyName.MyMeetings.BuildingBlocks.Application.Data;
-using CompanyName.MyMeetings.BuildingBlocks.Infrastructure;
-using CompanyName.MyMeetings.Modules.Administration.Application.Configuration;
+﻿using CompanyName.MyMeetings.BuildingBlocks.Application.Data;
 using CompanyName.MyMeetings.Modules.Administration.Application.Configuration.Commands;
 using Dapper;
 using MediatR;
@@ -12,7 +6,7 @@ using Newtonsoft.Json;
 
 namespace CompanyName.MyMeetings.Modules.Administration.Infrastructure.Configuration.Processing.Inbox
 {
-    internal class ProcessInboxCommandHandler : ICommandHandler<ProcessInboxCommand, Unit>
+    internal class ProcessInboxCommandHandler : ICommandHandler<ProcessInboxCommand>
     {
         private readonly IMediator _mediator;
         private readonly ISqlConnectionFactory _sqlConnectionFactory;
@@ -23,22 +17,26 @@ namespace CompanyName.MyMeetings.Modules.Administration.Infrastructure.Configura
             _sqlConnectionFactory = sqlConnectionFactory;
         }
 
-        public async Task<Unit> Handle(ProcessInboxCommand command, CancellationToken cancellationToken)
+        public async Task Handle(ProcessInboxCommand command, CancellationToken cancellationToken)
         {
             var connection = this._sqlConnectionFactory.GetOpenConnection();
-            string sql = "SELECT " +
-                         $"[InboxMessage].[Id] AS [{nameof(InboxMessageDto.Id)}], " +
-                         $"[InboxMessage].[Type] AS [{nameof(InboxMessageDto.Type)}], " +
-                         $"[InboxMessage].[Data] AS [{nameof(InboxMessageDto.Data)}] " +
-                         "FROM [administration].[InboxMessages] AS [InboxMessage] " +
-                         "WHERE [InboxMessage].[ProcessedDate] IS NULL " +
-                         "ORDER BY [InboxMessage].[OccurredOn]";
+            const string sql = $"""
+                               SELECT 
+                                   [InboxMessage].[Id] AS [{nameof(InboxMessageDto.Id)}], 
+                                   [InboxMessage].[Type] AS [{nameof(InboxMessageDto.Type)}], 
+                                   [InboxMessage].[Data] AS [{nameof(InboxMessageDto.Data)}] 
+                               FROM [administration].[InboxMessages] AS [InboxMessage] 
+                               WHERE [InboxMessage].[ProcessedDate] IS NULL 
+                               ORDER BY [InboxMessage].[OccurredOn]
+                               """;
 
             var messages = await connection.QueryAsync<InboxMessageDto>(sql);
 
-            const string sqlUpdateProcessedDate = "UPDATE [administration].[InboxMessages] " +
-                                                  "SET [ProcessedDate] = @Date " +
-                                                  "WHERE [Id] = @Id";
+            const string sqlUpdateProcessedDate = """
+                                                  UPDATE [administration].[InboxMessages] 
+                                                  SET [ProcessedDate] = @Date 
+                                                  WHERE [Id] = @Id
+                                                  """;
 
             foreach (var message in messages)
             {
@@ -64,8 +62,6 @@ namespace CompanyName.MyMeetings.Modules.Administration.Infrastructure.Configura
                     message.Id
                 });
             }
-
-            return Unit.Value;
         }
     }
 }

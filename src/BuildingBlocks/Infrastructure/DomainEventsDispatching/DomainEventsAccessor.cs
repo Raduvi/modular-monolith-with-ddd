@@ -1,22 +1,20 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using CompanyName.MyMeetings.BuildingBlocks.Domain;
+﻿using CompanyName.MyMeetings.BuildingBlocks.Domain;
 using Microsoft.EntityFrameworkCore;
 
 namespace CompanyName.MyMeetings.BuildingBlocks.Infrastructure.DomainEventsDispatching
 {
     public class DomainEventsAccessor : IDomainEventsAccessor
     {
-        private readonly DbContext _meetingsContext;
+        private readonly DbContext _dbContext;
 
-        public DomainEventsAccessor(DbContext meetingsContext)
+        public DomainEventsAccessor(DbContext dbContext)
         {
-            _meetingsContext = meetingsContext;
+            _dbContext = dbContext;
         }
 
         public IReadOnlyCollection<IDomainEvent> GetAllDomainEvents()
         {
-            var domainEntities = this._meetingsContext.ChangeTracker
+            var domainEntities = this._dbContext.ChangeTracker
                 .Entries<Entity>()
                 .Where(x => x.Entity.DomainEvents != null && x.Entity.DomainEvents.Any()).ToList();
 
@@ -27,7 +25,7 @@ namespace CompanyName.MyMeetings.BuildingBlocks.Infrastructure.DomainEventsDispa
 
         public void ClearAllDomainEvents()
         {
-            var domainEntities = this._meetingsContext.ChangeTracker
+            var domainEntities = this._dbContext.ChangeTracker
                 .Entries<Entity>()
                 .Where(x => x.Entity.DomainEvents != null && x.Entity.DomainEvents.Any()).ToList();
 

@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
+﻿using System.Reflection;
 using CompanyName.MyMeetings.Modules.Payments.Application.Contracts;
 using CompanyName.MyMeetings.Modules.Payments.Domain.Subscriptions;
-using CompanyName.MyMeetings.Modules.Payments.Infrastructure;
 using CompanyName.MyMeetings.Modules.Payments.Infrastructure.Configuration;
 using NetArchTest.Rules;
 using NUnit.Framework;
@@ -21,7 +17,7 @@ namespace CompanyName.MyMeetings.Modules.Payments.ArchTests.SeedWork
 
         protected static void AssertAreImmutable(IEnumerable<Type> types)
         {
-            IList<Type> failingTypes = new List<Type>();
+            List<Type> failingTypes = [];
             foreach (var type in types)
             {
                 if (type.GetFields().Any(x => !x.IsInitOnly) || type.GetProperties().Any(x => x.CanWrite))

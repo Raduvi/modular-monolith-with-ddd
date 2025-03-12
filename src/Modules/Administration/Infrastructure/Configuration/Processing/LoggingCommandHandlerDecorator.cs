@@ -1,11 +1,6 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-using CompanyName.MyMeetings.BuildingBlocks.Application;
-using CompanyName.MyMeetings.Modules.Administration.Application.Configuration;
+﻿using CompanyName.MyMeetings.BuildingBlocks.Application;
 using CompanyName.MyMeetings.Modules.Administration.Application.Configuration.Commands;
 using CompanyName.MyMeetings.Modules.Administration.Application.Contracts;
-using MediatR;
 using Serilog;
 using Serilog.Context;
 using Serilog.Core;
@@ -30,11 +25,13 @@ namespace CompanyName.MyMeetings.Modules.Administration.Infrastructure.Configura
             _decorated = decorated;
         }
 
-        public async Task<Unit> Handle(T command, CancellationToken cancellationToken)
+        public async Task Handle(T command, CancellationToken cancellationToken)
         {
             if (command is IRecurringCommand)
             {
-                return await _decorated.Handle(command, cancellationToken);
+                await _decorated.Handle(command, cancellationToken);
+
+                return;
             }
 
             using (
@@ -48,11 +45,9 @@ namespace CompanyName.MyMeetings.Modules.Administration.Infrastructure.Configura
                         "Executing command {Command}",
                         command.GetType().Name);
 
-                    var result = await _decorated.Handle(command, cancellationToken);
+                    await _decorated.Handle(command, cancellationToken);
 
                     this._logger.Information("Command {Command} processed successful", command.GetType().Name);
-
-                    return result;
                 }
                 catch (Exception exception)
                 {

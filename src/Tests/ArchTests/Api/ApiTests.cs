@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using CompanyName.MyMeetings.ArchTests.SeedWork;
 using NetArchTest.Rules;
 using NUnit.Framework;
@@ -11,10 +10,7 @@ namespace CompanyName.MyMeetings.ArchTests.Api
         [Test]
         public void AdministrationApi_DoesNotHaveDependency_ToOtherModules()
         {
-            var otherModules = new List<string>
-            {
-                MeetingsNamespace, PaymentsNamespace, UserAccessNamespace
-            };
+            List<string> otherModules = [MeetingsNamespace, PaymentsNamespace, UserAccessNamespace];
             var result = Types.InAssembly(ApiAssembly)
                 .That()
                         .ResideInNamespace("CompanyName.MyMeetings.API.Modules.Administration")
@@ -28,10 +24,7 @@ namespace CompanyName.MyMeetings.ArchTests.Api
         [Test]
         public void MeetingsApi_DoesNotHaveDependency_ToOtherModules()
         {
-            var otherModules = new List<string>
-            {
-                AdministrationNamespace, PaymentsNamespace, UserAccessNamespace
-            };
+            List<string> otherModules = [AdministrationNamespace, PaymentsNamespace, UserAccessNamespace];
             var result = Types.InAssembly(ApiAssembly)
                 .That()
                 .ResideInNamespace("CompanyName.MyMeetings.API.Modules.Meetings")
@@ -45,10 +38,7 @@ namespace CompanyName.MyMeetings.ArchTests.Api
         [Test]
         public void PaymentsApi_DoesNotHaveDependency_ToOtherModules()
         {
-            var otherModules = new List<string>
-            {
-                AdministrationNamespace, MeetingsNamespace, UserAccessNamespace
-            };
+            List<string> otherModules = [AdministrationNamespace, MeetingsNamespace, UserAccessNamespace];
             var result = Types.InAssembly(ApiAssembly)
                 .That()
                 .ResideInNamespace("CompanyName.MyMeetings.API.Modules.Payments")
@@ -62,10 +52,7 @@ namespace CompanyName.MyMeetings.ArchTests.Api
         [Test]
         public void UserAccessApi_DoesNotHaveDependency_ToOtherModules()
         {
-            var otherModules = new List<string>
-            {
-                AdministrationNamespace, MeetingsNamespace, PaymentsNamespace
-            };
+            List<string> otherModules = [AdministrationNamespace, MeetingsNamespace, PaymentsNamespace];
             var result = Types.InAssembly(ApiAssembly)
                 .That()
                 .ResideInNamespace("CompanyName.MyMeetings.API.Modules.UserAccess")

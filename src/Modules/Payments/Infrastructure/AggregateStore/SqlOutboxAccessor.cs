@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using CompanyName.MyMeetings.BuildingBlocks.Application.Data;
+﻿using CompanyName.MyMeetings.BuildingBlocks.Application.Data;
 using CompanyName.MyMeetings.BuildingBlocks.Application.Outbox;
 using Dapper;
 
@@ -16,7 +13,7 @@ namespace CompanyName.MyMeetings.Modules.Payments.Infrastructure.AggregateStore
         public SqlOutboxAccessor(ISqlConnectionFactory sqlConnectionFactory)
         {
             _sqlConnectionFactory = sqlConnectionFactory;
-            _messages = new List<OutboxMessage>();
+            _messages = [];
         }
 
         public void Add(OutboxMessage message)

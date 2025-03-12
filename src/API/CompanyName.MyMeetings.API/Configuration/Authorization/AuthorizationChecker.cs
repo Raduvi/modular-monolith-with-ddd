@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
+﻿using System.Reflection;
 using System.Text;
 using Microsoft.AspNetCore.Mvc;
 
@@ -14,7 +11,7 @@ namespace CompanyName.MyMeetings.API.Configuration.Authorization
             var assembly = typeof(Startup).Assembly;
             var allControllerTypes = assembly.GetTypes().Where(x => x.IsSubclassOf(typeof(ControllerBase)));
 
-            var notProtectedActionMethods = new List<string>();
+            List<string> notProtectedActionMethods = [];
             foreach (var controllerType in allControllerTypes)
             {
                 var controllerHasPermissionAttribute = controllerType.GetCustomAttribute<HasPermissionAttribute>();

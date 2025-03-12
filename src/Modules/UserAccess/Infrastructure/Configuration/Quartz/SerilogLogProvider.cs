@@ -1,5 +1,4 @@
-﻿using System;
-using Quartz.Logging;
+﻿using Quartz.Logging;
 using Serilog;
 
 namespace CompanyName.MyMeetings.Modules.UserAccess.Infrastructure.Configuration.Quartz
@@ -57,6 +56,11 @@ namespace CompanyName.MyMeetings.Modules.UserAccess.Infrastructure.Configuration
         }
 
         public IDisposable OpenMappedContext(string key, string value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IDisposable OpenMappedContext(string key, object value, bool destructure = false)
         {
             throw new NotImplementedException();
         }

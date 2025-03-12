@@ -1,10 +1,7 @@
-﻿using System;
-using System.Threading.Tasks;
-using CompanyName.MyMeetings.API.Configuration.Authorization;
+﻿using CompanyName.MyMeetings.API.Configuration.Authorization;
 using CompanyName.MyMeetings.Modules.Meetings.Application.Contracts;
-using CompanyName.MyMeetings.Modules.Meetings.Application.MeetingCommentingConfiguration.DisbaleMeetingCommentingConfiguration;
-using CompanyName.MyMeetings.Modules.Meetings.Application.MeetingCommentingConfiguration.EnableMeetingCommentingConfiguration;
-using Microsoft.AspNetCore.Http;
+using CompanyName.MyMeetings.Modules.Meetings.Application.MeetingCommentingConfigurations.DisableMeetingCommentingConfiguration;
+using CompanyName.MyMeetings.Modules.Meetings.Application.MeetingCommentingConfigurations.EnableMeetingCommentingConfiguration;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CompanyName.MyMeetings.API.Modules.Meetings.MeetingCommentingConfiguration
@@ -20,7 +17,7 @@ namespace CompanyName.MyMeetings.API.Modules.Meetings.MeetingCommentingConfigura
             _meetingsModule = meetingsModule;
         }
 
-        [HttpPatchAttribute("disable")]
+        [HttpPatch("disable")]
         [HasPermission(MeetingsPermissions.DisableMeetingCommenting)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> DisableCommenting(Guid meetingId)
@@ -29,7 +26,7 @@ namespace CompanyName.MyMeetings.API.Modules.Meetings.MeetingCommentingConfigura
             return Ok();
         }
 
-        [HttpPatchAttribute("enable")]
+        [HttpPatch("enable")]
         [HasPermission(MeetingsPermissions.EnableMeetingCommenting)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> EnableCommenting(Guid meetingId)

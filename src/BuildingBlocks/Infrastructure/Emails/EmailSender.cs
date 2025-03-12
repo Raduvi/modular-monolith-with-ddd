@@ -1,5 +1,4 @@
-﻿using System;
-using CompanyName.MyMeetings.BuildingBlocks.Application.Data;
+﻿using CompanyName.MyMeetings.BuildingBlocks.Application.Data;
 using CompanyName.MyMeetings.BuildingBlocks.Application.Emails;
 using Dapper;
 using Serilog;
@@ -24,11 +23,11 @@ namespace CompanyName.MyMeetings.BuildingBlocks.Infrastructure.Emails
             _sqlConnectionFactory = sqlConnectionFactory;
         }
 
-        public void SendEmail(EmailMessage message)
+        public async Task SendEmail(EmailMessage message)
         {
             var sqlConnection = _sqlConnectionFactory.GetOpenConnection();
 
-            sqlConnection.ExecuteScalar(
+            await sqlConnection.ExecuteScalarAsync(
                 "INSERT INTO [app].[Emails] ([Id], [From], [To], [Subject], [Content], [Date]) " +
                 "VALUES (@Id, @From, @To, @Subject, @Content, @Date) ",
                 new

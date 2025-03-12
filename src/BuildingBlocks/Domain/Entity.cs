@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace CompanyName.MyMeetings.BuildingBlocks.Domain
+﻿namespace CompanyName.MyMeetings.BuildingBlocks.Domain
 {
     public abstract class Entity
     {
@@ -22,7 +20,7 @@ namespace CompanyName.MyMeetings.BuildingBlocks.Domain
         /// <param name="domainEvent">Domain event.</param>
         protected void AddDomainEvent(IDomainEvent domainEvent)
         {
-            _domainEvents ??= new List<IDomainEvent>();
+            _domainEvents ??= [];
 
             this._domainEvents.Add(domainEvent);
         }

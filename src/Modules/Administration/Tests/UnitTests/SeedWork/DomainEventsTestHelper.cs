@@ -1,6 +1,4 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using CompanyName.MyMeetings.BuildingBlocks.Domain;
 
@@ -10,7 +8,7 @@ namespace CompanyName.MyMeetings.Modules.Administration.Domain.UnitTests.SeedWor
     {
         public static List<IDomainEvent> GetAllDomainEvents(Entity aggregate)
         {
-            List<IDomainEvent> domainEvents = new List<IDomainEvent>();
+            List<IDomainEvent> domainEvents = [];
 
             if (aggregate.DomainEvents != null)
             {

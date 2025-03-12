@@ -1,5 +1,4 @@
-﻿using System;
-using CompanyName.MyMeetings.BuildingBlocks.Application;
+﻿using CompanyName.MyMeetings.BuildingBlocks.Application;
 
 namespace CompanyNames.MyMeetings.Modules.UserAccess.IntegrationTests.SeedWork
 {
@@ -15,7 +14,7 @@ namespace CompanyNames.MyMeetings.Modules.UserAccess.IntegrationTests.SeedWork
         public Guid CorrelationId { get; }
 
         public bool IsAvailable { get; }
-        
+
         public void SetUserId(Guid userId)
         {
             this.UserId = userId;

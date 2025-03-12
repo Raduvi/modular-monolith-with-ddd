@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
+﻿using System.Data;
 using System.Reflection;
-using System.Threading.Tasks;
 using CompanyName.MyMeetings.Modules.Administration.Application.MeetingGroupProposals.AcceptMeetingGroupProposal;
 using CompanyName.MyMeetings.Modules.Administration.Infrastructure.Configuration.Processing.Outbox;
 using Dapper;
@@ -15,12 +12,14 @@ namespace CompanyName.MyMeetings.Modules.Administration.IntegrationTests.SeedWor
     {
         public static async Task<List<OutboxMessageDto>> GetOutboxMessages(IDbConnection connection)
         {
-            const string sql = "SELECT " +
-                               "[OutboxMessage].[Id], " +
-                               "[OutboxMessage].[Type], " +
-                               "[OutboxMessage].[Data] " +
-                               "FROM [administration].[OutboxMessages] AS [OutboxMessage] " +
-                               "ORDER BY [OutboxMessage].[OccurredOn]";
+            const string sql = """
+                               SELECT 
+                                   [OutboxMessage].[Id], 
+                                   [OutboxMessage].[Type], 
+                                   [OutboxMessage].[Data] 
+                               FROM [administration].[OutboxMessages] AS [OutboxMessage] 
+                               ORDER BY [OutboxMessage].[OccurredOn]
+                               """;
 
             var messages = await connection.QueryAsync<OutboxMessageDto>(sql);
             return messages.AsList();

@@ -1,6 +1,4 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-using CompanyName.MyMeetings.BuildingBlocks.Application;
+﻿using CompanyName.MyMeetings.BuildingBlocks.Application;
 using CompanyName.MyMeetings.BuildingBlocks.Application.Data;
 using CompanyName.MyMeetings.Modules.Payments.Application.Configuration.Queries;
 using CompanyName.MyMeetings.Modules.Payments.Application.Subscriptions.GetSubscriptionDetails;
@@ -24,13 +22,15 @@ namespace CompanyName.MyMeetings.Modules.Payments.Application.Subscriptions.GetP
 
         public async Task<SubscriptionDetailsDto> Handle(GetAuthenticatedPayerSubscriptionQuery query, CancellationToken cancellationToken)
         {
-            var sql = "SELECT" +
-                      $"[SubscriptionDetails].[Id] AS [{nameof(SubscriptionDetailsDto.SubscriptionId)}], " +
-                      $"[SubscriptionDetails].[Period] AS [{nameof(SubscriptionDetailsDto.Period)}], " +
-                      $"[SubscriptionDetails].[Status] AS [{nameof(SubscriptionDetailsDto.Status)}], " +
-                      $"[SubscriptionDetails].[ExpirationDate] AS [{nameof(SubscriptionDetailsDto.ExpirationDate)}] " +
-                      "FROM [payments].[SubscriptionDetails] AS [SubscriptionDetails] " +
-                      "WHERE [SubscriptionDetails].[PayerId] = @PayerId";
+            const string sql = $"""
+                                SELECT
+                                   [SubscriptionDetails].[Id] AS [{nameof(SubscriptionDetailsDto.SubscriptionId)}],
+                                   [SubscriptionDetails].[Period] AS [{nameof(SubscriptionDetailsDto.Period)}],
+                                   [SubscriptionDetails].[Status] AS [{nameof(SubscriptionDetailsDto.Status)}],
+                                   [SubscriptionDetails].[ExpirationDate] AS [{nameof(SubscriptionDetailsDto.ExpirationDate)}]
+                                FROM [payments].[SubscriptionDetails] AS [SubscriptionDetails]
+                                WHERE [SubscriptionDetails].[PayerId] = @PayerId
+                                """;
 
             var connection = _sqlConnectionFactory.GetOpenConnection();
 

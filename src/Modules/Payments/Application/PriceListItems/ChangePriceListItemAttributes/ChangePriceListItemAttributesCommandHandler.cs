@@ -1,12 +1,8 @@
-﻿using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
-using CompanyName.MyMeetings.BuildingBlocks.Application;
+﻿using CompanyName.MyMeetings.BuildingBlocks.Application;
 using CompanyName.MyMeetings.Modules.Payments.Application.Configuration.Commands;
 using CompanyName.MyMeetings.Modules.Payments.Domain.PriceListItems;
 using CompanyName.MyMeetings.Modules.Payments.Domain.SeedWork;
 using CompanyName.MyMeetings.Modules.Payments.Domain.Subscriptions;
-using MediatR;
 
 namespace CompanyName.MyMeetings.Modules.Payments.Application.PriceListItems.ChangePriceListItemAttributes
 {
@@ -19,13 +15,13 @@ namespace CompanyName.MyMeetings.Modules.Payments.Application.PriceListItems.Cha
             _aggregateStore = aggregateStore;
         }
 
-        public async Task<Unit> Handle(ChangePriceListItemAttributesCommand command, CancellationToken cancellationToken)
+        public async Task Handle(ChangePriceListItemAttributesCommand command, CancellationToken cancellationToken)
         {
             var priceListItem = await _aggregateStore.Load(new PriceListItemId(command.PriceListItemId));
 
             if (priceListItem == null)
             {
-                throw new InvalidCommandException(new List<string> { "Pricelist item for changing must exist." });
+                throw new InvalidCommandException(["Pricelist item for changing must exist."]);
             }
 
             priceListItem.ChangeAttributes(
@@ -35,7 +31,6 @@ namespace CompanyName.MyMeetings.Modules.Payments.Application.PriceListItems.Cha
                 MoneyValue.Of(command.PriceValue, command.PriceCurrency));
 
             _aggregateStore.AppendChanges(priceListItem);
-            return Unit.Value;
         }
     }
 }

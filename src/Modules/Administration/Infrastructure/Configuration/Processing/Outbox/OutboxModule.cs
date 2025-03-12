@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Autofac;
+﻿using Autofac;
 using CompanyName.MyMeetings.BuildingBlocks.Application.Events;
 using CompanyName.MyMeetings.BuildingBlocks.Application.Outbox;
 using CompanyName.MyMeetings.BuildingBlocks.Infrastructure;
@@ -43,7 +40,7 @@ namespace CompanyName.MyMeetings.Modules.Administration.Infrastructure.Configura
                 .Where(x => x.GetInterfaces().Contains(typeof(IDomainEventNotification)))
                 .ToList();
 
-            List<Type> notMappedNotifications = new List<Type>();
+            List<Type> notMappedNotifications = [];
             foreach (var domainEventNotification in domainEventNotifications)
             {
                 _domainNotificationsMap.TryGetBySecond(domainEventNotification, out var name);

@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
+﻿using System.Reflection;
 using CompanyName.MyMeetings.Modules.Meetings.Application.Contracts;
 using CompanyName.MyMeetings.Modules.Meetings.Domain.MeetingGroupProposals;
 using CompanyName.MyMeetings.Modules.Meetings.Infrastructure;
 using NetArchTest.Rules;
 using NUnit.Framework;
 
-namespace CompanyName.MyMeetings.Modules.Meetings.ArchitectureTests.SeedWork
+namespace CompanyName.MyMeetings.Modules.Meetings.ArchTests.SeedWork
 {
     public abstract class TestBase
     {
@@ -20,7 +17,7 @@ namespace CompanyName.MyMeetings.Modules.Meetings.ArchitectureTests.SeedWork
 
         protected static void AssertAreImmutable(IEnumerable<Type> types)
         {
-            IList<Type> failingTypes = new List<Type>();
+            List<Type> failingTypes = [];
             foreach (var type in types)
             {
                 if (type.GetFields().Any(x => !x.IsInitOnly) || type.GetProperties().Any(x => x.CanWrite))

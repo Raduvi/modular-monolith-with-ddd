@@ -1,7 +1,4 @@
-﻿using System.Threading.Tasks;
-using Timeout = CompanyName.MyMeetings.SUT.SeedWork.Probing.Timeout;
-
-namespace CompanyName.MyMeetings.SUT.SeedWork.Probing
+﻿namespace CompanyName.MyMeetings.SUT.SeedWork.Probing
 {
     public class Poller
     {

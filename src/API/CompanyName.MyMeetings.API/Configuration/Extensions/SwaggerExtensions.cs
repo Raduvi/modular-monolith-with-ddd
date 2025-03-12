@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Reflection;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.DependencyInjection;
+﻿using System.Reflection;
 using Microsoft.OpenApi.Models;
 
 namespace CompanyName.MyMeetings.API.Configuration.Extensions
@@ -21,7 +16,7 @@ namespace CompanyName.MyMeetings.API.Configuration.Extensions
                     Description = "MyMeetings API for modular monolith .NET application."
                 });
                 options.CustomSchemaIds(t => t.ToString());
-                
+
                 var baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
                 var commentsFileName = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 var commentsFile = Path.Combine(baseDirectory, commentsFileName);

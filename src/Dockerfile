@@ -1,11 +1,11 @@
 #See https://aka.ms/containerfastmode to understand how Visual Studio uses this Dockerfile to build your images for faster debugging.
 
-FROM mcr.microsoft.com/dotnet/core/aspnet:3.1-buster-slim AS base
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
 WORKDIR /app
 EXPOSE 80
 EXPOSE 443
 
-FROM mcr.microsoft.com/dotnet/core/sdk:3.1-buster AS build
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 COPY ["API/CompanyName.MyMeetings.API/CompanyName.MyMeetings.API.csproj", "API/CompanyName.MyMeetings.API/"]
 COPY ["Modules/UserAccess/Application/CompanyName.MyMeetings.Modules.UserAccess.Application.csproj", "Modules/UserAccess/Application/"]
@@ -14,7 +14,6 @@ COPY ["BuildingBlocks/Infrastructure/CompanyName.MyMeetings.BuildingBlocks.Infra
 COPY ["BuildingBlocks/Domain/CompanyName.MyMeetings.BuildingBlocks.Domain.csproj", "BuildingBlocks/Domain/"]
 COPY ["BuildingBlocks/Application/CompanyName.MyMeetings.BuildingBlocks.Application.csproj", "BuildingBlocks/Application/"]
 COPY ["Modules/UserAccess/Domain/CompanyName.MyMeetings.Modules.UserAccess.Domain.csproj", "Modules/UserAccess/Domain/"]
-COPY ["BuildingBlocks/EventBus/CompanyName.MyMeetings.BuildingBlocks.EventBus.csproj", "BuildingBlocks/EventBus/"]
 COPY ["Modules/Meetings/IntegrationEvents/CompanyName.MyMeetings.Modules.Meetings.IntegrationEvents.csproj", "Modules/Meetings/IntegrationEvents/"]
 COPY ["Modules/Meetings/Application/CompanyName.MyMeetings.Modules.Meetings.Application.csproj", "Modules/Meetings/Application/"]
 COPY ["Modules/Meetings/Domain/CompanyName.MyMeetings.Modules.Meetings.Domain.csproj", "Modules/Meetings/Domain/"]
@@ -28,6 +27,9 @@ COPY ["Modules/Payments/Infrastructure/CompanyName.MyMeetings.Modules.Payments.I
 COPY ["Modules/Administration/Application/CompanyName.MyMeetings.Modules.Administration.Application.csproj", "Modules/Administration/Application/"]
 COPY ["Modules/Administration/Domain/CompanyName.MyMeetings.Modules.Administration.Domain.csproj", "Modules/Administration/Domain/"]
 COPY ["Modules/Administration/Infrastructure/CompanyName.MyMeetings.Modules.Administration.Infrastructure.csproj", "Modules/Administration/Infrastructure/"]
+COPY ["Directory.Packages.props", "Directory.Packages.props"]
+COPY ["Directory.Build.props", "Directory.Build.props"]
+COPY ["Directory.Build.targets", "Directory.Build.targets"]
 RUN dotnet restore "API/CompanyName.MyMeetings.API/CompanyName.MyMeetings.API.csproj"
 COPY . .
 WORKDIR "/src/API/CompanyName.MyMeetings.API"

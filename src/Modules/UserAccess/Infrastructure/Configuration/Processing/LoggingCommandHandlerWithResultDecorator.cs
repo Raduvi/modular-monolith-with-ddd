@@ -1,7 +1,4 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-using CompanyName.MyMeetings.BuildingBlocks.Application;
+﻿using CompanyName.MyMeetings.BuildingBlocks.Application;
 using CompanyName.MyMeetings.Modules.UserAccess.Application.Configuration.Commands;
 using CompanyName.MyMeetings.Modules.UserAccess.Application.Contracts;
 using Serilog;
@@ -30,6 +27,11 @@ namespace CompanyName.MyMeetings.Modules.UserAccess.Infrastructure.Configuration
 
         public async Task<TResult> Handle(T command, CancellationToken cancellationToken)
         {
+            if (command is IRecurringCommand)
+            {
+                return await _decorated.Handle(command, cancellationToken);
+            }
+
             using (
                 LogContext.Push(
                     new RequestLogEnricher(_executionContextAccessor),
@@ -66,7 +68,9 @@ namespace CompanyName.MyMeetings.Modules.UserAccess.Infrastructure.Configuration
 
             public void Enrich(LogEvent logEvent, ILogEventPropertyFactory propertyFactory)
             {
-                logEvent.AddOrUpdateProperty(new LogEventProperty("Context", new ScalarValue($"Command:{_command.Id.ToString()}")));
+                logEvent.AddOrUpdateProperty(new LogEventProperty(
+                    "Context",
+                    new ScalarValue($"Command:{_command.Id.ToString()}")));
             }
         }
 
@@ -83,7 +87,9 @@ namespace CompanyName.MyMeetings.Modules.UserAccess.Infrastructure.Configuration
             {
                 if (_executionContextAccessor.IsAvailable)
                 {
-                    logEvent.AddOrUpdateProperty(new LogEventProperty("CorrelationId", new ScalarValue(_executionContextAccessor.CorrelationId)));
+                    logEvent.AddOrUpdateProperty(new LogEventProperty(
+                        "CorrelationId",
+                        new ScalarValue(_executionContextAccessor.CorrelationId)));
                 }
             }
         }

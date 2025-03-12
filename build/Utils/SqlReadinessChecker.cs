@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading;
-using Nuke.Common;
 using Dapper;
 using System.Data.SqlClient;
 
@@ -20,12 +19,12 @@ namespace Utils
                 try
                 {
                     connection.QuerySingle<string>("SELECT @@Version");
-                    Logger.Info("Sql Server started");
+                    Serilog.Log.Information("Sql Server started");
                     break;
                 }
                 catch
                 {
-                    Logger.Info("Sql Server not ready");
+                    Serilog.Log.Information("Sql Server not ready");
                     if (tryCounts > maxTryCounts)
                     {
                         throw new Exception("Sql Server cannot start.");

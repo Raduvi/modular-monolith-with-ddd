@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
-using CompanyName.MyMeetings.BuildingBlocks.Application;
+﻿using CompanyName.MyMeetings.BuildingBlocks.Application;
 using CompanyName.MyMeetings.BuildingBlocks.Application.Data;
 using CompanyName.MyMeetings.Modules.UserAccess.Application.Authorization.GetUserPermissions;
 using CompanyName.MyMeetings.Modules.UserAccess.Application.Configuration.Queries;
@@ -27,15 +24,17 @@ namespace CompanyName.MyMeetings.Modules.UserAccess.Application.Authorization.Ge
         {
             if (!_executionContextAccessor.IsAvailable)
             {
-                return new List<UserPermissionDto>();
+                return [];
             }
 
             var connection = _sqlConnectionFactory.GetOpenConnection();
 
-            const string sql = "SELECT " +
-                               "[UserPermission].[PermissionCode] AS [Code] " +
-                               "FROM [users].[v_UserPermissions] AS [UserPermission] " +
-                               "WHERE [UserPermission].UserId = @UserId";
+            const string sql = $""" 
+                               SELECT [UserPermission].[PermissionCode] AS [{nameof(UserPermissionDto.Code)}]
+                               FROM [users].[v_UserPermissions] AS [UserPermission] 
+                               WHERE [UserPermission].UserId = @UserId
+                               """;
+
             var permissions = await connection.QueryAsync<UserPermissionDto>(
                 sql,
                 new { _executionContextAccessor.UserId });

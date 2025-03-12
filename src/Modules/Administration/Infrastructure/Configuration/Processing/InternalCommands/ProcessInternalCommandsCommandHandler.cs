@@ -1,17 +1,13 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-using CompanyName.MyMeetings.BuildingBlocks.Application.Data;
+﻿using CompanyName.MyMeetings.BuildingBlocks.Application.Data;
 using CompanyName.MyMeetings.BuildingBlocks.Infrastructure.InternalCommands;
 using CompanyName.MyMeetings.Modules.Administration.Application.Configuration.Commands;
 using Dapper;
-using MediatR;
 using Newtonsoft.Json;
 using Polly;
 
 namespace CompanyName.MyMeetings.Modules.Administration.Infrastructure.Configuration.Processing.InternalCommands
 {
-    internal class ProcessInternalCommandsCommandHandler : ICommandHandler<ProcessInternalCommandsCommand, Unit>
+    internal class ProcessInternalCommandsCommandHandler : ICommandHandler<ProcessInternalCommandsCommand>
     {
         private readonly ISqlConnectionFactory _sqlConnectionFactory;
 
@@ -25,17 +21,19 @@ namespace CompanyName.MyMeetings.Modules.Administration.Infrastructure.Configura
             _internalCommandsMapper = internalCommandsMapper;
         }
 
-        public async Task<Unit> Handle(ProcessInternalCommandsCommand command, CancellationToken cancellationToken)
+        public async Task Handle(ProcessInternalCommandsCommand command, CancellationToken cancellationToken)
         {
             var connection = this._sqlConnectionFactory.GetOpenConnection();
 
-            string sql = "SELECT " +
-                               $"[Command].[Id] AS [{nameof(InternalCommandDto.Id)}], " +
-                               $"[Command].[Type] AS [{nameof(InternalCommandDto.Type)}], " +
-                               $"[Command].[Data] AS [{nameof(InternalCommandDto.Data)}] " +
-                               "FROM [administration].[InternalCommands] AS [Command] " +
-                               "WHERE [Command].[ProcessedDate] IS NULL " +
-                               "ORDER BY [Command].[EnqueueDate]";
+            const string sql = $"""
+                          SELECT
+                              [Command].[Id] AS [{nameof(InternalCommandDto.Id)}], 
+                              [Command].[Type] AS [{nameof(InternalCommandDto.Type)}], 
+                              [Command].[Data] AS [{nameof(InternalCommandDto.Data)}] 
+                          FROM [administration].[InternalCommands] AS [Command] 
+                          WHERE [Command].[ProcessedDate] IS NULL 
+                          ORDER BY [Command].[EnqueueDate]
+                          """;
 
             var commands = await connection.QueryAsync<InternalCommandDto>(sql);
 
@@ -70,8 +68,6 @@ namespace CompanyName.MyMeetings.Modules.Administration.Infrastructure.Configura
                         });
                 }
             }
-
-            return Unit.Value;
         }
 
         private async Task ProcessCommand(

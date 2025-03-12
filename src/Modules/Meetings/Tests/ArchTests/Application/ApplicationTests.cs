@@ -1,11 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using CompanyName.MyMeetings.Modules.Meetings.Application.Configuration.Commands;
 using CompanyName.MyMeetings.Modules.Meetings.Application.Configuration.Queries;
 using CompanyName.MyMeetings.Modules.Meetings.Application.Contracts;
-using CompanyName.MyMeetings.Modules.Meetings.ArchitectureTests.SeedWork;
+using CompanyName.MyMeetings.Modules.Meetings.ArchTests.SeedWork;
 using FluentValidation;
 using MediatR;
 using NetArchTest.Rules;
@@ -125,7 +122,7 @@ namespace CompanyName.MyMeetings.Modules.Meetings.ArchTests.Application
                 .Inherit(typeof(InternalCommandBase<>))
                 .GetTypes();
 
-            var failingTypes = new List<Type>();
+            List<Type> failingTypes = [];
 
             foreach (var type in types)
             {
@@ -158,7 +155,7 @@ namespace CompanyName.MyMeetings.Modules.Meetings.ArchTests.Application
                 .Should().ImplementInterface(typeof(IRequestHandler<>))
                 .GetTypes();
 
-            List<Type> failingTypes = new List<Type>();
+            List<Type> failingTypes = [];
             foreach (var type in types)
             {
                 bool isCommandHandler = type.GetInterfaces().Any(x =>
@@ -187,7 +184,7 @@ namespace CompanyName.MyMeetings.Modules.Meetings.ArchTests.Application
                 .That().ImplementInterface(commandWithResultHandlerType)
                 .GetTypes().ToList();
 
-            var failingTypes = new List<Type>();
+            List<Type> failingTypes = [];
             foreach (Type type in types)
             {
                 Type interfaceType = type.GetInterface(commandWithResultHandlerType.Name);

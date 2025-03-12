@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using CompanyName.MyMeetings.BuildingBlocks.Application.Data;
+﻿using CompanyName.MyMeetings.BuildingBlocks.Application.Data;
 using CompanyName.MyMeetings.Modules.Meetings.Application.Configuration.Commands;
 using CompanyName.MyMeetings.Modules.Meetings.Application.MeetingGroups.SetMeetingGroupExpirationDate;
 using CompanyName.MyMeetings.Modules.Meetings.Domain.MeetingGroups;
@@ -28,11 +23,13 @@ namespace CompanyName.MyMeetings.Modules.Meetings.Application.MemberSubscription
 
         public async Task Handle(MemberSubscriptionExpirationDateChangedNotification notification, CancellationToken cancellationToken)
         {
-            var sql = "SELECT " +
-                      $"[MeetingGroupMember].MeetingGroupId AS [{nameof(MeetingGroupMemberResponse.MeetingGroupId)}], " +
-                      $"[MeetingGroupMember].RoleCode AS [{nameof(MeetingGroupMemberResponse.RoleCode)}] " +
-                      "FROM [meetings].[v_MeetingGroupMembers] AS [MeetingGroupMember] " +
-                      "WHERE [MeetingGroupMember].MemberId = @MemberId";
+            const string sql = $"""
+                               SELECT 
+                                   [MeetingGroupMember].MeetingGroupId AS [{nameof(MeetingGroupMemberResponse.MeetingGroupId)}], 
+                                   [MeetingGroupMember].RoleCode AS [{nameof(MeetingGroupMemberResponse.RoleCode)}] 
+                               FROM [meetings].[v_MeetingGroupMembers] AS [MeetingGroupMember] 
+                               WHERE [MeetingGroupMember].MemberId = @MemberId
+                               """;
 
             var connection = _sqlConnectionFactory.GetOpenConnection();
 

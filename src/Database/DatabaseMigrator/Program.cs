@@ -1,20 +1,19 @@
-﻿using System.IO;
-using DbUp;
+﻿using DbUp;
 using DbUp.ScriptProviders;
 using Serilog;
 using Serilog.Formatting.Compact;
 
 namespace DatabaseMigrator
 {
-    class Program
+    public class Program
     {
-        static int Main(string[] args)
+        public static int Main(string[] args)
         {
             var logsPath = "logs\\migration-logs";
 
             ILogger logger = new LoggerConfiguration()
                 .WriteTo.Console()
-                .WriteTo.RollingFile(new CompactJsonFormatter(), logsPath)
+                .WriteTo.File(new CompactJsonFormatter(), logsPath)
                 .CreateLogger();
 
             logger.Information("Logger configured. Starting migration...");

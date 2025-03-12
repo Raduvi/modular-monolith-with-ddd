@@ -1,6 +1,4 @@
-﻿using System;
-using CompanyName.MyMeetings.Modules.Meetings.Domain.Comments;
-using CompanyName.MyMeetings.Modules.Meetings.Domain.MeetingComments;
+﻿using CompanyName.MyMeetings.Modules.Meetings.Domain.MeetingComments;
 using CompanyName.MyMeetings.Modules.Meetings.Domain.Meetings;
 using CompanyName.MyMeetings.Modules.Meetings.Domain.Members;
 using Microsoft.EntityFrameworkCore;

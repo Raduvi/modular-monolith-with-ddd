@@ -1,5 +1,4 @@
-﻿using System;
-using Autofac;
+﻿using Autofac;
 using CompanyName.MyMeetings.BuildingBlocks.Application;
 using CompanyName.MyMeetings.BuildingBlocks.Infrastructure;
 using CompanyName.MyMeetings.BuildingBlocks.Infrastructure.Emails;
@@ -20,7 +19,6 @@ using CompanyName.MyMeetings.Modules.Payments.Infrastructure.Configuration.Media
 using CompanyName.MyMeetings.Modules.Payments.Infrastructure.Configuration.Processing;
 using CompanyName.MyMeetings.Modules.Payments.Infrastructure.Configuration.Processing.Outbox;
 using CompanyName.MyMeetings.Modules.Payments.Infrastructure.Configuration.Quartz;
-using Serilog.AspNetCore;
 using ILogger = Serilog.ILogger;
 
 namespace CompanyName.MyMeetings.Modules.Payments.Infrastructure.Configuration
@@ -70,7 +68,7 @@ namespace CompanyName.MyMeetings.Modules.Payments.Infrastructure.Configuration
 
             containerBuilder.RegisterModule(new LoggingModule(logger));
 
-            var loggerFactory = new SerilogLoggerFactory(logger);
+            var loggerFactory = new Serilog.Extensions.Logging.SerilogLoggerFactory(logger);
             containerBuilder.RegisterModule(new DataAccessModule(connectionString, loggerFactory));
 
             containerBuilder.RegisterModule(new ProcessingModule());

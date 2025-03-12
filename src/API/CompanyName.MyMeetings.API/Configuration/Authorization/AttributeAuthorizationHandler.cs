@@ -1,7 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Routing;
+﻿using Microsoft.AspNetCore.Authorization;
 
 namespace CompanyName.MyMeetings.API.Configuration.Authorization
 {
@@ -12,7 +9,8 @@ namespace CompanyName.MyMeetings.API.Configuration.Authorization
     {
         protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, TRequirement requirement)
         {
-            var attribute = (context.Resource as RouteEndpoint)?.Metadata.GetMetadata<TAttribute>();
+            var endpoint = (context.Resource as HttpContext).GetEndpoint() as RouteEndpoint;
+            var attribute = endpoint?.Metadata.GetMetadata<TAttribute>();
 
             return HandleRequirementAsync(context, requirement, attribute);
         }

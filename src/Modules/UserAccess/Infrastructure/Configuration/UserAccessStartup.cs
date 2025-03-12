@@ -1,13 +1,10 @@
-﻿using System;
-using Autofac;
+﻿using Autofac;
 using CompanyName.MyMeetings.BuildingBlocks.Application;
 using CompanyName.MyMeetings.BuildingBlocks.Application.Emails;
 using CompanyName.MyMeetings.BuildingBlocks.Infrastructure;
 using CompanyName.MyMeetings.BuildingBlocks.Infrastructure.Emails;
 using CompanyName.MyMeetings.BuildingBlocks.Infrastructure.EventBus;
-using CompanyName.MyMeetings.Modules.UserAccess.Application.UserRegistrations.RegisterNewUser;
 using CompanyName.MyMeetings.Modules.UserAccess.Infrastructure.Configuration.DataAccess;
-using CompanyName.MyMeetings.Modules.UserAccess.Infrastructure.Configuration.Domain;
 using CompanyName.MyMeetings.Modules.UserAccess.Infrastructure.Configuration.Email;
 using CompanyName.MyMeetings.Modules.UserAccess.Infrastructure.Configuration.EventsBus;
 using CompanyName.MyMeetings.Modules.UserAccess.Infrastructure.Configuration.Logging;
@@ -17,7 +14,6 @@ using CompanyName.MyMeetings.Modules.UserAccess.Infrastructure.Configuration.Pro
 using CompanyName.MyMeetings.Modules.UserAccess.Infrastructure.Configuration.Quartz;
 using CompanyName.MyMeetings.Modules.UserAccess.Infrastructure.Configuration.Security;
 using Serilog;
-using Serilog.AspNetCore;
 
 namespace CompanyName.MyMeetings.Modules.UserAccess.Infrastructure.Configuration
 {
@@ -64,16 +60,12 @@ namespace CompanyName.MyMeetings.Modules.UserAccess.Infrastructure.Configuration
 
             containerBuilder.RegisterModule(new LoggingModule(logger.ForContext("Module", "UserAccess")));
 
-            var loggerFactory = new SerilogLoggerFactory(logger);
+            var loggerFactory = new Serilog.Extensions.Logging.SerilogLoggerFactory(logger);
             containerBuilder.RegisterModule(new DataAccessModule(connectionString, loggerFactory));
-            containerBuilder.RegisterModule(new DomainModule());
             containerBuilder.RegisterModule(new ProcessingModule());
             containerBuilder.RegisterModule(new EventsBusModule(eventsBus));
             containerBuilder.RegisterModule(new MediatorModule());
-
-            var domainNotificationsMap = new BiDictionary<string, Type>();
-            domainNotificationsMap.Add("NewUserRegisteredNotification", typeof(NewUserRegisteredNotification));
-            containerBuilder.RegisterModule(new OutboxModule(domainNotificationsMap));
+            containerBuilder.RegisterModule(new OutboxModule(new BiDictionary<string, Type>()));
 
             containerBuilder.RegisterModule(new QuartzModule());
             containerBuilder.RegisterModule(new EmailModule(emailsConfiguration, emailSender));

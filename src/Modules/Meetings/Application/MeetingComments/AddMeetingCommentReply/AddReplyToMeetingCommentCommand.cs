@@ -1,7 +1,6 @@
-﻿using System;
-using CompanyName.MyMeetings.Modules.Meetings.Application.Contracts;
+﻿using CompanyName.MyMeetings.Modules.Meetings.Application.Contracts;
 
-namespace CompanyName.MyMeetings.Modules.Meetings.Application.MeetingComments.AddCommentReply
+namespace CompanyName.MyMeetings.Modules.Meetings.Application.MeetingComments.AddMeetingCommentReply
 {
     public class AddReplyToMeetingCommentCommand : CommandBase<Guid>
     {

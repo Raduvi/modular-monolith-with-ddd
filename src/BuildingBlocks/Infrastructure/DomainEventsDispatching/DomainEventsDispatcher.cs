@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Autofac;
+﻿using Autofac;
 using Autofac.Core;
 using CompanyName.MyMeetings.BuildingBlocks.Application.Events;
 using CompanyName.MyMeetings.BuildingBlocks.Application.Outbox;
@@ -42,7 +39,7 @@ namespace CompanyName.MyMeetings.BuildingBlocks.Infrastructure.DomainEventsDispa
         {
             var domainEvents = _domainEventsProvider.GetAllDomainEvents();
 
-            var domainEventNotifications = new List<IDomainEventNotification<IDomainEvent>>();
+            List<IDomainEventNotification<IDomainEvent>> domainEventNotifications = [];
             foreach (var domainEvent in domainEvents)
             {
                 Type domainEvenNotificationType = typeof(IDomainEventNotification<>);

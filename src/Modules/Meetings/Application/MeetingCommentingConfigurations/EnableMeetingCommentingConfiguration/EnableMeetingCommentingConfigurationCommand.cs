@@ -1,8 +1,6 @@
-﻿using System;
-using CompanyName.MyMeetings.Modules.Meetings.Application.Contracts;
-using CompanyName.MyMeetings.Modules.Meetings.Domain.Meetings;
+﻿using CompanyName.MyMeetings.Modules.Meetings.Application.Contracts;
 
-namespace CompanyName.MyMeetings.Modules.Meetings.Application.MeetingCommentingConfiguration.EnableMeetingCommentingConfiguration
+namespace CompanyName.MyMeetings.Modules.Meetings.Application.MeetingCommentingConfigurations.EnableMeetingCommentingConfiguration
 {
     public class EnableMeetingCommentingConfigurationCommand : CommandBase
     {

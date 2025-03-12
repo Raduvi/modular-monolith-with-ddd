@@ -1,6 +1,4 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-using CompanyName.MyMeetings.BuildingBlocks.Application.Data;
+﻿using CompanyName.MyMeetings.BuildingBlocks.Application.Data;
 using CompanyName.MyMeetings.Modules.Payments.Application.Configuration.Queries;
 using Dapper;
 
@@ -21,15 +19,19 @@ namespace CompanyName.MyMeetings.Modules.Payments.Application.PriceListItems.Get
         {
             using var connection = _sqlConnectionFactory.GetOpenConnection();
 
+            const string sql = $"""
+                                SELECT 
+                                    [PriceListItem].[MoneyCurrency] AS [{nameof(PriceListItemMoneyValueDto.Currency)}], 
+                                    [PriceListItem].[MoneyValue] AS [{nameof(PriceListItemMoneyValueDto.Value)}] 
+                                FROM [payments].[PriceListItems] AS [PriceListItem] 
+                                WHERE 
+                                    [PriceListItem].[IsActive] = 1 
+                                    AND [PriceListItem].[SubscriptionPeriodCode] = @PeriodTypeCode 
+                                    AND [PriceListItem].[CategoryCode] = @CategoryCode 
+                                    AND [PriceListItem].[CountryCode] = @CountryCode 
+                                """;
             return await connection.QuerySingleAsync<PriceListItemMoneyValueDto>(
-                "SELECT " +
-                $"[PriceListItem].[MoneyCurrency] AS [{nameof(PriceListItemMoneyValueDto.Currency)}], " +
-                $"[PriceListItem].[MoneyValue] AS [{nameof(PriceListItemMoneyValueDto.Value)}] " +
-                "FROM [payments].[PriceListItems] AS [PriceListItem] " +
-                "WHERE [PriceListItem].[IsActive] = 1 AND " +
-                "[PriceListItem].[SubscriptionPeriodCode] = @PeriodTypeCode AND " +
-                "[PriceListItem].[CategoryCode] = @CategoryCode AND " +
-                "[PriceListItem].[CountryCode] = @CountryCode ",
+                sql,
                 new
                 {
                     query.CategoryCode,

@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 using CompanyName.MyMeetings.Modules.Payments.Domain.Payers;
 using CompanyName.MyMeetings.Modules.Payments.Domain.PriceListItems;
 using CompanyName.MyMeetings.Modules.Payments.Domain.PriceListItems.PricingStrategies;
@@ -49,7 +47,7 @@ namespace CompanyName.MyMeetings.Modules.Payments.Domain.UnitTests.SubscriptionR
                 MoneyValue.Of(60, "PLN"),
                 PriceListItemCategory.Renewal);
 
-            var priceListItems = new List<PriceListItemData> { priceListItem };
+            List<PriceListItemData> priceListItems = [priceListItem];
             var priceList = PriceList.Create(priceListItems, new DirectValueFromPriceListPricingStrategy(priceListItems));
 
             return priceList;

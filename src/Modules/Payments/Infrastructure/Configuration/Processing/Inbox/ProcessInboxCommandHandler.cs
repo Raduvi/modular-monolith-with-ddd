@@ -1,9 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using CompanyName.MyMeetings.BuildingBlocks.Application.Data;
-using CompanyName.MyMeetings.BuildingBlocks.Infrastructure;
+﻿using CompanyName.MyMeetings.BuildingBlocks.Application.Data;
 using CompanyName.MyMeetings.Modules.Payments.Application.Configuration.Commands;
 using Dapper;
 using MediatR;
@@ -22,22 +17,25 @@ namespace CompanyName.MyMeetings.Modules.Payments.Infrastructure.Configuration.P
             _sqlConnectionFactory = sqlConnectionFactory;
         }
 
-        public async Task<Unit> Handle(ProcessInboxCommand command, CancellationToken cancellationToken)
+        public async Task Handle(ProcessInboxCommand command, CancellationToken cancellationToken)
         {
             var connection = this._sqlConnectionFactory.GetOpenConnection();
-            string sql = "SELECT " +
-                               $"[InboxMessage].[Id] AS [{nameof(InboxMessageDto.Id)}], " +
-                               $"[InboxMessage].[Type] AS [{nameof(InboxMessageDto.Type)}], " +
-                               $"[InboxMessage].[Data] AS [{nameof(InboxMessageDto.Data)}] " +
-                               "FROM [payments].[InboxMessages] AS [InboxMessage] " +
-                               "WHERE [InboxMessage].[ProcessedDate] IS NULL " +
-                               "ORDER BY [InboxMessage].[OccurredOn]";
+            const string sql = $"""
+                                SELECT [InboxMessage].[Id] AS [{nameof(InboxMessageDto.Id)}],
+                                       [InboxMessage].[Type] AS [{nameof(InboxMessageDto.Type)}],
+                                       [InboxMessage].[Data] AS [{nameof(InboxMessageDto.Data)}]
+                                FROM [payments].[InboxMessages] AS [InboxMessage]
+                                WHERE [InboxMessage].[ProcessedDate] IS NULL
+                                ORDER BY [InboxMessage].[OccurredOn]
+                                """;
 
             var messages = await connection.QueryAsync<InboxMessageDto>(sql);
 
-            const string sqlUpdateProcessedDate = "UPDATE [payments].[InboxMessages] " +
-                                                  "SET [ProcessedDate] = @Date " +
-                                                  "WHERE [Id] = @Id";
+            const string sqlUpdateProcessedDate = """
+                                                  UPDATE [payments].[InboxMessages] 
+                                                  SET [ProcessedDate] = @Date 
+                                                  WHERE [Id] = @Id
+                                                  """;
 
             foreach (var message in messages)
             {
@@ -49,7 +47,7 @@ namespace CompanyName.MyMeetings.Modules.Payments.Infrastructure.Configuration.P
 
                 try
                 {
-                    await _mediator.Publish((INotification) request, cancellationToken);
+                    await _mediator.Publish((INotification)request, cancellationToken);
                 }
                 catch (Exception e)
                 {
@@ -63,8 +61,6 @@ namespace CompanyName.MyMeetings.Modules.Payments.Infrastructure.Configuration.P
                     message.Id
                 });
             }
-
-            return Unit.Value;
         }
     }
 }

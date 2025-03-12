@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
+﻿using System.Reflection;
 using CompanyName.MyMeetings.API;
 using NetArchTest.Rules;
 using NUnit.Framework;
@@ -22,7 +19,7 @@ namespace CompanyName.MyMeetings.ArchTests.SeedWork
 
         protected static void AssertAreImmutable(IEnumerable<Type> types)
         {
-            IList<Type> failingTypes = new List<Type>();
+            List<Type> failingTypes = [];
             foreach (var type in types)
             {
                 if (type.GetFields().Any(x => !x.IsInitOnly) || type.GetProperties().Any(x => x.CanWrite))

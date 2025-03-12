@@ -1,9 +1,7 @@
-using System.Threading;
-using System.Threading.Tasks;
 using CompanyName.MyMeetings.Modules.UserAccess.Application.Authentication;
+using CompanyName.MyMeetings.Modules.UserAccess.Application.Authentication.Authenticate;
 using CompanyName.MyMeetings.Modules.UserAccess.Application.Configuration.Commands;
 using CompanyName.MyMeetings.Modules.UserAccess.Domain.Users;
-using MediatR;
 
 namespace CompanyName.MyMeetings.Modules.UserAccess.Application.Users.AddAdminUser
 {
@@ -16,7 +14,7 @@ namespace CompanyName.MyMeetings.Modules.UserAccess.Application.Users.AddAdminUs
             _userRepository = userRepository;
         }
 
-        public async Task<Unit> Handle(AddAdminUserCommand command, CancellationToken cancellationToken)
+        public async Task Handle(AddAdminUserCommand command, CancellationToken cancellationToken)
         {
             var password = PasswordManager.HashPassword(command.Password);
 
@@ -29,8 +27,6 @@ namespace CompanyName.MyMeetings.Modules.UserAccess.Application.Users.AddAdminUs
                 command.Name);
 
             await _userRepository.AddAsync(user);
-
-            return Unit.Value;
         }
     }
 }

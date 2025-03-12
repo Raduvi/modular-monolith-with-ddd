@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Autofac;
+﻿using Autofac;
 using CompanyName.MyMeetings.BuildingBlocks.Infrastructure;
 using CompanyName.MyMeetings.BuildingBlocks.Infrastructure.InternalCommands;
 using CompanyName.MyMeetings.Modules.Administration.Application.Configuration.Commands;
-using CompanyName.MyMeetings.Modules.Administration.Application.Members;
 using Module = Autofac.Module;
 
 namespace CompanyName.MyMeetings.Modules.Administration.Infrastructure.Configuration.Processing.InternalCommands
@@ -41,7 +37,7 @@ namespace CompanyName.MyMeetings.Modules.Administration.Infrastructure.Configura
                                 x.BaseType == typeof(InternalCommandBase)))
                 .ToList();
 
-            List<Type> notMappedInternalCommands = new List<Type>();
+            List<Type> notMappedInternalCommands = [];
             foreach (var internalCommand in internalCommands)
             {
                 _internalCommandsMap.TryGetBySecond(internalCommand, out var name);

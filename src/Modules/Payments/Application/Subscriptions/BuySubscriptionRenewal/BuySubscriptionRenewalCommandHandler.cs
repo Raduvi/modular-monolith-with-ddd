@@ -1,18 +1,11 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using CompanyName.MyMeetings.BuildingBlocks.Application;
 using CompanyName.MyMeetings.BuildingBlocks.Application.Data;
 using CompanyName.MyMeetings.Modules.Payments.Application.Configuration.Commands;
 using CompanyName.MyMeetings.Modules.Payments.Application.PriceListItems;
 using CompanyName.MyMeetings.Modules.Payments.Domain.Payers;
 using CompanyName.MyMeetings.Modules.Payments.Domain.SeedWork;
-using CompanyName.MyMeetings.Modules.Payments.Domain.SubscriptionPayments;
 using CompanyName.MyMeetings.Modules.Payments.Domain.SubscriptionRenewalPayments;
 using CompanyName.MyMeetings.Modules.Payments.Domain.Subscriptions;
-using Dapper;
 
 namespace CompanyName.MyMeetings.Modules.Payments.Application.Subscriptions.BuySubscriptionRenewal
 {
@@ -44,7 +37,7 @@ namespace CompanyName.MyMeetings.Modules.Payments.Application.Subscriptions.BuyS
 
             if (subscription == null)
             {
-                throw new InvalidCommandException(new List<string> { "Subscription for renewal must exist." });
+                throw new InvalidCommandException(["Subscription for renewal must exist."]);
             }
 
             var subscriptionRenewalPayment = SubscriptionRenewalPayment.Buy(

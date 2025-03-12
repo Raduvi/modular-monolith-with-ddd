@@ -1,17 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
-using CompanyName.MyMeetings.BuildingBlocks.Application;
+﻿using CompanyName.MyMeetings.BuildingBlocks.Application;
 using CompanyName.MyMeetings.Modules.Meetings.Application.Configuration.Commands;
-using CompanyName.MyMeetings.Modules.Meetings.Domain.Comments;
 using CompanyName.MyMeetings.Modules.Meetings.Domain.MeetingCommentingConfigurations;
 using CompanyName.MyMeetings.Modules.Meetings.Domain.MeetingComments;
 using CompanyName.MyMeetings.Modules.Meetings.Domain.MeetingGroups;
 using CompanyName.MyMeetings.Modules.Meetings.Domain.Meetings;
 using CompanyName.MyMeetings.Modules.Meetings.Domain.Members;
 
-namespace CompanyName.MyMeetings.Modules.Meetings.Application.MeetingComments.AddCommentReply
+namespace CompanyName.MyMeetings.Modules.Meetings.Application.MeetingComments.AddMeetingCommentReply
 {
     internal class AddReplyToMeetingCommentCommandHandler : ICommandHandler<AddReplyToMeetingCommentCommand, Guid>
     {
@@ -35,7 +30,7 @@ namespace CompanyName.MyMeetings.Modules.Meetings.Application.MeetingComments.Ad
             var meetingComment = await _meetingCommentRepository.GetByIdAsync(new MeetingCommentId(command.InReplyToCommentId));
             if (meetingComment == null)
             {
-                throw new InvalidCommandException(new List<string> { "To create reply the comment must exist." });
+                throw new InvalidCommandException(["To create reply the comment must exist."]);
             }
 
             var meeting = await _meetingRepository.GetByIdAsync(meetingComment.GetMeetingId());

@@ -1,10 +1,6 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-using CompanyName.MyMeetings.BuildingBlocks.Application;
+﻿using CompanyName.MyMeetings.BuildingBlocks.Application;
 using CompanyName.MyMeetings.Modules.Meetings.Application.Configuration.Commands;
 using CompanyName.MyMeetings.Modules.Meetings.Application.Contracts;
-using MediatR;
 using Serilog;
 using Serilog.Context;
 using Serilog.Core;
@@ -29,11 +25,13 @@ namespace CompanyName.MyMeetings.Modules.Meetings.Infrastructure.Configuration.P
             _decorated = decorated;
         }
 
-        public async Task<Unit> Handle(T command, CancellationToken cancellationToken)
+        public async Task Handle(T command, CancellationToken cancellationToken)
         {
             if (command is IRecurringCommand)
             {
-                return await _decorated.Handle(command, cancellationToken);
+                await _decorated.Handle(command, cancellationToken);
+
+                return;
             }
 
             using (
@@ -47,11 +45,9 @@ namespace CompanyName.MyMeetings.Modules.Meetings.Infrastructure.Configuration.P
                         "Executing command {Command}",
                         command.GetType().Name);
 
-                    var result = await _decorated.Handle(command, cancellationToken);
+                    await _decorated.Handle(command, cancellationToken);
 
                     this._logger.Information("Command {Command} processed successful", command.GetType().Name);
-
-                    return result;
                 }
                 catch (Exception exception)
                 {
@@ -72,7 +68,9 @@ namespace CompanyName.MyMeetings.Modules.Meetings.Infrastructure.Configuration.P
 
             public void Enrich(LogEvent logEvent, ILogEventPropertyFactory propertyFactory)
             {
-                logEvent.AddOrUpdateProperty(new LogEventProperty("Context", new ScalarValue($"Command:{_command.Id.ToString()}")));
+                logEvent.AddOrUpdateProperty(new LogEventProperty(
+                    "Context",
+                    new ScalarValue($"Command:{_command.Id.ToString()}")));
             }
         }
 
@@ -89,7 +87,9 @@ namespace CompanyName.MyMeetings.Modules.Meetings.Infrastructure.Configuration.P
             {
                 if (_executionContextAccessor.IsAvailable)
                 {
-                    logEvent.AddOrUpdateProperty(new LogEventProperty("CorrelationId", new ScalarValue(_executionContextAccessor.CorrelationId)));
+                    logEvent.AddOrUpdateProperty(new LogEventProperty(
+                        "CorrelationId",
+                        new ScalarValue(_executionContextAccessor.CorrelationId)));
                 }
             }
         }
